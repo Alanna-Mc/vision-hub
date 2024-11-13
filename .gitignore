@@ -1,0 +1,43 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment directory
+venv/
+
+# SQLite database files
+*.db
+
+# Environment and configuration files
+.env
+*.env
+
+# Secret configuration files
+client_secrets.json
+credentials.json
+
+# Flask instance folder (if used)
+instance/
+
+# Logs
+*.log
+
+# MacOS specific files
+.DS_Store
+
+# Vim swap files
+.*.swp
+
+# Vim backup files
+.*.swo
+.*.swn
+
+# Vim session files
+Session.vim
+
+# Temporary files
+*.tmp
+*.bak
+*.orig
+
