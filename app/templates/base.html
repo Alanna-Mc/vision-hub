@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+    <head>
+      {% if title %}
+      <title>{{ title }} - Vision Hub</title>
+      {% else %}
+      <title>Welcome to Vision Hub</title>
+      {% endif %}
+    </head>
+    <body>
+        <div>Vision Hub: <a href="/index">Home</a></div>
+        <hr>
+        {% block content %}{% endblock %}
+    </body>
+</html>
