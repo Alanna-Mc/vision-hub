@@ -57,7 +57,7 @@ class Role(db.Model):
     role_name: so.Mapped[str] = so.mapped_column(sa.String(20), index=True, unique=True)
 
     # Relationship to User model
-    users: so.WriteOnlyMapped['User'] = so.relationship('User', back_populates='role', cascade='all, delete-orphan')
+    users: so.Mapped['User'] = so.relationship('User', back_populates='role', cascade='all, delete-orphan')
     
     def __repr__(self):
         """
