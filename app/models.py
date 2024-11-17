@@ -1,11 +1,12 @@
+from flask_login import UserMixin
 from datetime import datetime, timezone
 from werkzeug.security import generate_password_hash, check_password_hash
 from typing import Optional
 import sqlalchemy as sa
 import sqlalchemy.orm as so
-from app import db
+from app import db, login
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     """
     Represents a user in the system.
     
@@ -48,6 +49,11 @@ class User(db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+
+@login.user_loader
+def load_user(id):
+    return db.session.get(User, int(id))
 
 
 class Role(db.Model):
