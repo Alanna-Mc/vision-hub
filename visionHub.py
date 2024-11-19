@@ -3,6 +3,7 @@ import sqlalchemy.orm as so
 from app import app, db
 from app.models import User, Role
 
+
 # Add shell context to work with database entities without having to import them in the command line
 @app.shell_context_processor
 def make_shell_context():

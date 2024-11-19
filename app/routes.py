@@ -11,7 +11,6 @@ import sqlalchemy as sa
 #  Decorator part of Flask-login that prevents unautherised access by requiring login
 @login_required
 def index():
-    user = {'username': 'Miguel'}
     posts = [
         {
             'author': {'username': 'John'},
@@ -24,22 +23,38 @@ def index():
     ]
     return render_template('index.html', title='Home', posts=posts)
 
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():        
     if current_user.is_authenticated:
         return redirect(url_for('index'))
+    
     form = LoginForm()
     if form.validate_on_submit():
         user = db.session.scalar(sa.select(User).where(User.username == form.username.data))
+        
+        # Check if user exists and password matches
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
             return redirect(url_for('login'))
+        
+        # Log the user in
         login_user(user, remember=form.remember_me.data)
+
+        # Get next_page if it exists
         next_page = request.args.get('next')
-        if not next_page or urlsplit(next_page).netloc != '':
-            next_page = url_for('index')
-        return redirect(next_page)
+        if next_page and urlsplit(next_page).netloc == '':
+            return redirect(next_page)
+
+        # Redirect user based on role
+        if user.role == "Admin":
+            return redirect(url_for('admin_dashboard'))
+        
+        # Temp redirect for non-admins
+        return redirect(url_for('index'))
+    
     return render_template('login.html', title='Sign In', form=form)
+
 
 @app.route('/logout')
 def logout():
