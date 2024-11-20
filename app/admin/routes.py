@@ -36,6 +36,6 @@ def manage_users():
 @app.route('/admin/dashboard')
 @login_required
 def admin_dashboard():
-    if current_user.role != "0":
+    if current_user.role.role_name!= "Admin":
         return redirect(url_for('index'))
     return render_template('admin/dashboard.html', title='Admin Dashboard')

@@ -45,9 +45,9 @@ def login():
         next_page = request.args.get('next')
         if next_page and urlsplit(next_page).netloc == '':
             return redirect(next_page)
-
+        
         # Redirect user based on role
-        if user.role == "Admin":
+        if user.role.role_name == "Admin":
             return redirect(url_for('admin_dashboard'))
         
         # Temp redirect for non-admins
