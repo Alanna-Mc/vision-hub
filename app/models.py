@@ -6,6 +6,7 @@ import sqlalchemy as sa
 import sqlalchemy.orm as so
 from app import db, login
 
+
 class User(UserMixin, db.Model):
     """
     Represents a user in the system.
@@ -20,20 +21,24 @@ class User(UserMixin, db.Model):
        role (Role): The role associated with the user (relationship).
        dateStarted (datetime): The time when the user was created.
     """
-    
+    # Primary key
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     username: so.Mapped[str] = so.mapped_column(sa.String(120), index=True, unique=True)
     first_name: so.Mapped[str] = so.mapped_column(sa.String(50), index=True)
     surname: so.Mapped[str] = so.mapped_column(sa.String(50), index=True)
     password_hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(256))
-
-    # Foreign key to Role model
+    # Default: Not onboarding
+    is_onboarding: so.Mapped[bool] = so.mapped_column(default=False)
+    manager_id: so.Mapped[Optional[int]] = so.mapped_column(sa.ForeignKey('user.id'), nullable=True)
+    manager: so.Mapped[Optional['User']] = so.relationship('User', remote_side=[id])
+    # Foreign key to Role 
     role_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('role.id'))
-
-    # Relationship to Role model
     role: so.Mapped['Role'] = so.relationship('Role', back_populates='users')
-
+    # Foreign key to Department 
+    department_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('department.id'))
+    department: so.Mapped['Department'] = so.relationship('Department', back_populates='users')
     dateStarted: so.Mapped[datetime] = so.mapped_column(index=True, default=lambda: datetime.now(timezone.utc))
+    job_title: so.Mapped[str] = so.mapped_column(sa.String(50), index=True)
     
     def __repr__(self):
         """
@@ -80,3 +85,29 @@ class Role(db.Model):
             str: A formatted string containing the role name.
         """
         return f'<Role {self.role_name}>'
+
+
+class Department(db.Model):
+    """
+    Represents a department in the system.
+    
+    Attributes:
+        id (int): The unique identifier for the role (primary key).
+        department_name (str): The name of the department (e.g., office, operational).
+        users (list[User]): List of users assigned to this role (relationship).
+    """
+    
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    department_name: so.Mapped[str] = so.mapped_column(sa.String(20), index=True, unique=True)
+
+    # Relationship to User model
+    users: so.Mapped['User'] = so.relationship('User', back_populates='department', cascade='all, delete-orphan')
+    
+    def __repr__(self):
+        """
+        Returns a string representation of the Department object.
+
+        Returns:
+            str: A formatted string containing the department name.
+        """
+        return f'<Department {self.department_name}>'

@@ -1,9 +1,9 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField
-from wtforms.validators import ValidationError, DataRequired, EqualTo
+from wtforms.validators import ValidationError, DataRequired, EqualTo, Optional
 import sqlalchemy as sa
 from app import db
-from app.models import User
+from app.models import User, Department, Role
 
 
 def validate_email(self, field):
@@ -23,7 +23,11 @@ class CreateUserForm(FlaskForm):
     surname = StringField('Surname', validators=[DataRequired()])
     username = StringField('Email', validators=[DataRequired(), validate_email, validate_username])
     password = PasswordField('Password', validators=[DataRequired()])
-    password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
-    role = SelectField('Role', choices=[(1, 'Admin'), (2, 'Manager'), (3, 'Staff')],  coerce=int, validators=[DataRequired()])
-    submit = SubmitField('Register')
-
+    password2 = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    role = SelectField('Role', coerce=int, validators=[DataRequired()])
+    is_onboarding = BooleanField('Is Onboarding?', validators=[DataRequired()])
+    manager= SelectField('Manager', coerce=int, validators=[Optional()])
+    department = SelectField('Department', coerce=int, validators=[DataRequired()])
+    job_title = StringField('Position', validators=[DataRequired()])
+    
+    
