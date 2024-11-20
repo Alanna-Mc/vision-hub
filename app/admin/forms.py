@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField
+from wtforms import StringField, PasswordField, RadioField, SubmitField, SelectField
 from wtforms.validators import ValidationError, DataRequired, EqualTo, Optional
 import sqlalchemy as sa
 from app import db
@@ -25,9 +25,9 @@ class CreateUserForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     password2 = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     role = SelectField('Role', coerce=int, validators=[DataRequired()])
-    is_onboarding = BooleanField('Is Onboarding?', validators=[DataRequired()])
+    is_onboarding = RadioField('Does staff memeber need onboarding?', choices=[('yes', 'Yes'), ('no', 'No')],validators=[DataRequired()])
     manager= SelectField('Manager', coerce=int, validators=[Optional()])
     department = SelectField('Department', coerce=int, validators=[DataRequired()])
     job_title = StringField('Position', validators=[DataRequired()])
-    
+    submit = SubmitField('Register')
     
