@@ -4,18 +4,29 @@ FROM python:3.9-slim
 # Set working directory to /app to execute following commands
 WORKDIR /app
 
-# Copy contents of /app to the container
-COPY . /app
+# Copy the requirements file into the container
+COPY requirements.txt .
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Make port accessible 
+# Copy contents of the application to the container
+COPY . .
+
+# Make the entrypoint script executable
+RUN chmod +x entrypoint.sh
+
+# Make the entrypoint script executable
+RUN chmod +x entrypoint.sh
+
+# Set environment variables
+ENV FLASK_APP=visionHub.py
+
+# Expose the port your app runs on
 EXPOSE 8080
 
-# Define environment variable
-ENV FLASK_APP=app.py
+# Set the entrypoint to your script
+ENTRYPOINT ["./entrypoint.sh"]
 
-# Command to run the application when the container starts
-CMD ["flask", "run", "--host=0.0.0.0"]
-
+# Command to run the application
+CMD ["python", "visionHub.py"]
