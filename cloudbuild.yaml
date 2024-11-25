@@ -1,0 +1,28 @@
+steps:
+
+#  Build your Docker image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'europe-west2-docker.pkg.dev/vision-hub-442623/vision-hub-docker-repo/vision-hub-flask-app:$SHORT_SHA', '.']
+
+# Push the Docker image to Artifact Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'europe-west2-docker.pkg.dev/vision-hub-442623/vision-hub-docker-repo/vision-hub-flask-app:$SHORT_SHA']
+
+#  Deploy to Cloud Run
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: 'gcloud'
+  timeout: 240s
+  args:
+    - 'run'
+    - 'deploy'
+    - 'vision-hub'
+    - '--image'
+    - 'europe-west2-docker.pkg.dev/vision-hub-442623/vision-hub-docker-repo/vision-hub-flask-app:$SHORT_SHA'
+    - '--region'
+    - 'europe-west2'
+    - '--platform'
+    - 'managed'
+    - '--allow-unauthenticated'
+
+substitutions:
+  _REGION: europe-west2
