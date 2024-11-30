@@ -1,3 +1,5 @@
+# The database for this application was developed with the support of Miguel Grinberg's The Flash Mega Tutorial series
+ 
 from flask_login import UserMixin
 from datetime import datetime, timezone
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -111,3 +113,58 @@ class Department(db.Model):
             str: A formatted string containing the department name.
         """
         return f'<Department {self.department_name}>'
+    
+
+class TrainingModule (db.Model):        
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    module_title: so.Mapped[str] = so.mapped_column(sa.String(150), index=True, unique=True)
+    module_description: so.Mapped[str] = so.mapped_column(sa.Text)
+    module_instructions: so.Mapped[str] = so.mapped_column(sa.Text)
+    video_url: so.Mapped[str] = so.mapped_column(sa.String(300))
+        
+    questions: so.Mapped[list['Question']] = so.relationship('Question', back_populates='training_module', cascade='all, delete-orphan')
+    user_progress: so.Mapped[list['UserModuleProgress']] = so.relationship('UserModuleProgress', back_populates='training_module')
+
+
+class Question (db.Model):
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    trainingModule_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('trainingmodule.id'), nullable=False)
+    question_text: so.Mapped[str] = so.mapped_column(sa.String(1000))
+
+    trainingmodule: so.Mapped['TrainingModule'] = so.relationship('TrainingModule', back_populates='questions')
+    options: so.Mapped[list['Option']] = so.relationship('Option', back_populates='question', cascade='all, delete-orphan')
+
+
+class Option (db.Model):
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    question_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('question.id'), nullable=False)
+    option_text: so.Mapped[str] = so.mapped_column(sa.String(255), nullable=False)
+    is_correct: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=False)
+
+    question: so.Mapped['Question'] = so.relationship('Question', back_populates='options')
+
+
+class UserModuleProgress (db.Model):
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('user.id'), nullable=False)
+    module_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('module.id'), nullable=False)
+    start_date: so.Mapped[datetime] = so.mapped_column(sa.DateTime, default=datetime.utcnow)
+    completed_date: so.Mapped[datetime] = so.mapped_column(sa.DateTime, nullable=True)
+    score: so.Mapped[int] = so.mapped_column(sa.Integer, nullable=True)
+    attempts: so.Mapped[int] = so.mapped_column(sa.Integer, default=0)
+
+    user: so.Mapped['User'] = so.relationship('User', back_populates='module_progress')
+    module: so.Mapped['TrainingModule'] = so.relationship('TrainingModule', back_populates='user_progress')
+    answers: so.Mapped[list['UserQuestionAnswer']] = so.relationship('UserQuestionAnswer', back_populates='progress', cascade='all, delete-orphan')
+
+
+class UserQuestionAnswer (db.Model):
+    id: so.Mapped[int] = so.mapped_column(sa.Integer, primary_key=True)
+    progress_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('user_module_progress.id'), nullable=False)
+    question_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('question.id'), nullable=False)
+    selected_option_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('option.id'), nullable=True)
+    is_correct: so.Mapped[bool] = so.mapped_column(sa.Boolean)
+
+    progress: so.Mapped['UserModuleProgress'] = so.relationship('UserModuleProgress', back_populates='answers')
+    question: so.Mapped['Question'] = so.relationship('Question')
+    selected_option: so.Mapped['Option'] = so.relationship('Option')
