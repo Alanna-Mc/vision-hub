@@ -3,7 +3,7 @@
 from flask_login import UserMixin
 from datetime import datetime, timezone
 from werkzeug.security import generate_password_hash, check_password_hash
-from typing import Optional
+from typing import Optional, List
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 from app import db, login
@@ -32,7 +32,8 @@ class User(UserMixin, db.Model):
     # Default: Not onboarding
     is_onboarding: so.Mapped[bool] = so.mapped_column(default=False)
     manager_id: so.Mapped[Optional[int]] = so.mapped_column(sa.ForeignKey('user.id'), nullable=True)
-    manager: so.Mapped[Optional['User']] = so.relationship('User', remote_side=[id])
+    manager: so.Mapped[Optional['User']] = so.relationship('User', remote_side=[id], back_populates='manages')
+    manages: so.Mapped[List['User']] = so.relationship('User', back_populates='manager')
     # Foreign key to Role 
     role_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('role.id'))
     role: so.Mapped['Role'] = so.relationship('Role', back_populates='users')
@@ -41,7 +42,8 @@ class User(UserMixin, db.Model):
     department: so.Mapped['Department'] = so.relationship('Department', back_populates='users')
     dateStarted: so.Mapped[datetime] = so.mapped_column(index=True, default=lambda: datetime.now(timezone.utc))
     job_title: so.Mapped[str] = so.mapped_column(sa.String(50), index=True)
-    
+    module_progress: so.Mapped[List['UserModuleProgress']] = so.relationship('UserModuleProgress', back_populates='user')
+
     def __repr__(self):
         """
         Returns a string representation of the User object.
@@ -77,7 +79,7 @@ class Role(db.Model):
     role_name: so.Mapped[str] = so.mapped_column(sa.String(20), index=True, unique=True)
 
     # Relationship to User model
-    users: so.Mapped['User'] = so.relationship('User', back_populates='role', cascade='all, delete-orphan')
+    users: so.Mapped[list['User']] = so.relationship('User', back_populates='role')
     
     def __repr__(self):
         """
@@ -103,7 +105,7 @@ class Department(db.Model):
     department_name: so.Mapped[str] = so.mapped_column(sa.String(20), index=True, unique=True)
 
     # Relationship to User model
-    users: so.Mapped['User'] = so.relationship('User', back_populates='department', cascade='all, delete-orphan')
+    users: so.Mapped[List['User']] = so.relationship('User', back_populates='department')
     
     def __repr__(self):
         """
@@ -115,56 +117,67 @@ class Department(db.Model):
         return f'<Department {self.department_name}>'
     
 
-class TrainingModule (db.Model):        
+class TrainingModule (db.Model):     
+    __tablename__ = 'training_module'   
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     module_title: so.Mapped[str] = so.mapped_column(sa.String(150), index=True, unique=True)
-    module_description: so.Mapped[str] = so.mapped_column(sa.Text)
-    module_instructions: so.Mapped[str] = so.mapped_column(sa.Text)
+    module_description: so.Mapped[str] = so.mapped_column(sa.Text, nullable=False)
+    module_instructions: so.Mapped[str] = so.mapped_column(sa.Text, nullable=False)
     video_url: so.Mapped[str] = so.mapped_column(sa.String(300))
         
-    questions: so.Mapped[list['Question']] = so.relationship('Question', back_populates='training_module', cascade='all, delete-orphan')
-    user_progress: so.Mapped[list['UserModuleProgress']] = so.relationship('UserModuleProgress', back_populates='training_module')
+    questions: so.Mapped[List['Question']] = so.relationship('Question', back_populates='training_module', cascade='all, delete-orphan')
+    user_progress: so.Mapped[List['UserModuleProgress']] = so.relationship('UserModuleProgress', back_populates='training_module')
 
 
 class Question (db.Model):
+    __tablename__ = 'question'
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
-    trainingModule_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('trainingmodule.id'), nullable=False)
-    question_text: so.Mapped[str] = so.mapped_column(sa.String(1000))
+    question_text: so.Mapped[str] = so.mapped_column(sa.String(1000), nullable=False)
+    
+    training_module_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('training_module.id'), nullable=False)
+    training_module: so.Mapped['TrainingModule'] = so.relationship('TrainingModule', back_populates='questions')
 
-    trainingmodule: so.Mapped['TrainingModule'] = so.relationship('TrainingModule', back_populates='questions')
-    options: so.Mapped[list['Option']] = so.relationship('Option', back_populates='question', cascade='all, delete-orphan')
+    option: so.Mapped[List['Option']] = so.relationship('Option', back_populates='question', cascade='all, delete-orphan')
 
 
 class Option (db.Model):
+    __tablename__ = "option"
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     question_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('question.id'), nullable=False)
-    option_text: so.Mapped[str] = so.mapped_column(sa.String(255), nullable=False)
-    is_correct: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=False)
+    option_text: so.Mapped[str] = so.mapped_column(sa.String(500), nullable=False)
+    is_correct: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=False, nullable=False)
 
     question: so.Mapped['Question'] = so.relationship('Question', back_populates='options')
 
 
 class UserModuleProgress (db.Model):
-    id: so.Mapped[int] = so.mapped_column(primary_key=True)
-    user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('user.id'), nullable=False)
-    module_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('module.id'), nullable=False)
-    start_date: so.Mapped[datetime] = so.mapped_column(sa.DateTime, default=datetime.utcnow)
+    __tablename__ = 'user_module_progress'
+    id: so.Mapped[int] = so.mapped_column(primary_key=True) 
+    start_date: so.Mapped[datetime] = so.mapped_column(
+    sa.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
     completed_date: so.Mapped[datetime] = so.mapped_column(sa.DateTime, nullable=True)
     score: so.Mapped[int] = so.mapped_column(sa.Integer, nullable=True)
-    attempts: so.Mapped[int] = so.mapped_column(sa.Integer, default=0)
+    attempts: so.Mapped[int] = so.mapped_column(sa.Integer, default=0, nullable=False)
 
+    user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('user.id'), nullable=False)
     user: so.Mapped['User'] = so.relationship('User', back_populates='module_progress')
-    module: so.Mapped['TrainingModule'] = so.relationship('TrainingModule', back_populates='user_progress')
-    answers: so.Mapped[list['UserQuestionAnswer']] = so.relationship('UserQuestionAnswer', back_populates='progress', cascade='all, delete-orphan')
+    
+    training_module_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('training_module.id'), nullable=False)
+    training_module: so.Mapped['TrainingModule'] = so.relationship('TrainingModule', back_populates='user_progress')
+    
+    answers: so.Mapped[List['UserQuestionAnswer']] = so.relationship('UserQuestionAnswer', back_populates='progress', cascade='all, delete-orphan')
 
 
 class UserQuestionAnswer (db.Model):
-    id: so.Mapped[int] = so.mapped_column(sa.Integer, primary_key=True)
-    progress_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('user_module_progress.id'), nullable=False)
-    question_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('question.id'), nullable=False)
-    selected_option_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('option.id'), nullable=True)
+    __tablename__ = 'user_question_answer'
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
     is_correct: so.Mapped[bool] = so.mapped_column(sa.Boolean)
-
+    
+    progress_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('user_module_progress.id'), nullable=False)
     progress: so.Mapped['UserModuleProgress'] = so.relationship('UserModuleProgress', back_populates='answers')
+    
+    question_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('question.id'), nullable=False)
     question: so.Mapped['Question'] = so.relationship('Question')
+
+    selected_option_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('option.id'), nullable=True)
     selected_option: so.Mapped['Option'] = so.relationship('Option')
