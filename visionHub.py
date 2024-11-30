@@ -10,4 +10,4 @@ def make_shell_context():
     return {'sa': sa, 'so': so, 'db': db, 'User': User, 'Role': Role, 'Department': Department,}
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port="8080")
+    app.run(host="0.0.0.0", port="8080", debug=True)

@@ -1,5 +1,5 @@
 from app import app, db
-from app.admin.forms import CreateUserForm
+from app.admin.forms import CreateUserForm, EditUserForm
 from app.models import User, Role, Department
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_required
@@ -8,7 +8,6 @@ from datetime import datetime
 @app.route('/admin/register', methods=['GET', 'POST'])
 def register_user():
     if not current_user.is_authenticated or current_user.role.role_name != 'Admin':
-        flash("You are not authorized to access this page.")
         return redirect(url_for('index'))
 
     form = CreateUserForm()
@@ -45,11 +44,6 @@ def register_user():
     return render_template('admin/createUser.html', title='Register User', form=form)
 
 
-@app.route('/manage_users', methods=['GET'])
-def manage_users():
-    return render_template('admin/manageUsers.html', title='Manage Users')
-
-
 @app.route('/admin/dashboard')
 @login_required
 def admin_dashboard():
@@ -58,5 +52,73 @@ def admin_dashboard():
     return render_template('admin/dashboard.html', title='Admin Dashboard')
 
 
+@app.route('/admin/manage_users', methods=['GET'])
+@login_required
+def manage_users():
+    if current_user.role.role_name != "Admin":
+        return redirect(url_for('index'))
+     
+    try:
+        users = User.query.all()
+        return render_template('admin/manageUsers.html', title='Manage Users', users = users)
+    except Exception as e:
+        error_message = 'Error: ' + str(e)
+        return error_message
 
+
+@app.route('/admin/edit_user/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def edit_user(user_id):
+    if current_user.role.role_name != "Admin":
+        return redirect(url_for('index'))
     
+    # Retrieve the user to edit
+    user = User.query.get_or_404(user_id)
+
+    # Set default values for non-text fields
+    role_choices = [(role.id, role.role_name) for role in Role.query.all()]
+    department_choices = [(dept.id, dept.department_name) for dept in Department.query.all()]
+    manager_choices = [(0, 'None')] + [(manager.id, f"{manager.first_name} {manager.surname}") for manager in User.query.all()]
+
+    # Fill the text fields with the user's data
+    form = EditUserForm(obj=user)
+  
+    # Assign choices to form fields
+    form.role.choices = role_choices
+    form.department.choices = department_choices
+    form.manager.choices = manager_choices
+    
+    # Set default values for select fields
+    form.role.data = user.role_id
+    form.department.data = user.department_id
+    form.manager.data = user.manager_id or 0  # Use 0 if manager_id is None
+    form.is_onboarding.data = 'yes' if user.is_onboarding else 'no'
+
+    # Form data
+    if form.validate_on_submit():
+        # Update user details
+        user.first_name=form.first_name.data,
+        user.surname=form.surname.data,
+        user.username=form.username.data,
+        user.role_id=int(form.role.data),
+        user.is_onboarding=(form.is_onboarding.data == 'yes'),
+        user.manager_id=int(form.manager.data) if form.manager.data else None,
+        user.department_id=int(form.department.data),
+        user.job_title=form.job_title.data
+
+        # Password reset optional
+        if form.password.data:
+            user.set_password(form.password.data)
+
+        # Start date update optional
+        if form.dateStarted.data:
+            user.dateStarted = form.dateStarted.data
+
+        # Save changes to the database
+        db.session.commit()
+
+        flash(f'User {user.first_name} {user.surname} user details have been updated')
+        return redirect(url_for('manage_users'))
+    
+    return render_template('admin/editUser.html', title='Edit User', form=form, user=user)
+

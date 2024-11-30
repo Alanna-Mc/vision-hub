@@ -53,9 +53,8 @@ def login():
          #   return redirect(url_for('manager_dashboard'))
         #elif user.role.role_name == "Staff":
          #   return redirect(url_for('staff_dashboard'))
-        else:
-            # Temp redirect for non-admins
-            return redirect(url_for('index'))
+        # Temp redirect for non-admins
+        return redirect(url_for('index'))
     
     return render_template('login.html', title='Sign In', form=form)
 
