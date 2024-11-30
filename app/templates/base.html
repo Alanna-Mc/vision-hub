@@ -9,7 +9,6 @@
     </head>
     <body>
         <div>Vision Hub:
-            <a href="{{ url_for('index') }}">Home</a>
             {% if current_user.is_anonymous %}
             <a href="{{ url_for('login') }}">Login</a>
             {% else %}

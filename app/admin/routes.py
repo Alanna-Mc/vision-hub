@@ -8,11 +8,11 @@ from datetime import datetime
 @app.route('/admin/register', methods=['GET', 'POST'])
 def register_user():
     if not current_user.is_authenticated or current_user.role.role_name != 'Admin':
-        return redirect(url_for('index'))
+        return redirect(url_for('logout'))
 
     form = CreateUserForm()
 
-    # Populate choices dynamically
+    # Set dropdown values for non-text fields
     form.role.choices = [(0, 'Select Role')] + [(role.id, role.role_name) for role in Role.query.all()]
     form.department.choices = [(0, 'Select Department')] + [(dept.id, dept.department_name) for dept in Department.query.all()]
     form.manager.choices = [(0, 'None')] + [(user.id, f"{user.first_name} {user.surname}") for user in User.query.all()]
@@ -48,7 +48,7 @@ def register_user():
 @login_required
 def admin_dashboard():
     if current_user.role.role_name!= "Admin":
-        return redirect(url_for('index'))
+        return redirect(url_for('logout'))
     return render_template('admin/dashboard.html', title='Admin Dashboard')
 
 
@@ -56,7 +56,7 @@ def admin_dashboard():
 @login_required
 def manage_users():
     if current_user.role.role_name != "Admin":
-        return redirect(url_for('index'))
+        return redirect(url_for('logout'))
      
     try:
         users = User.query.all()
@@ -70,12 +70,12 @@ def manage_users():
 @login_required
 def edit_user(user_id):
     if current_user.role.role_name != "Admin":
-        return redirect(url_for('index'))
+        return redirect(url_for('logout'))
     
     # Retrieve the user to edit
     user = User.query.get_or_404(user_id)
 
-    # Set default values for non-text fields
+    # Set dropdown values for non-text fields
     role_choices = [(role.id, role.role_name) for role in Role.query.all()]
     department_choices = [(dept.id, dept.department_name) for dept in Department.query.all()]
     manager_choices = [(0, 'None')] + [(manager.id, f"{manager.first_name} {manager.surname}") for manager in User.query.all()]
@@ -83,12 +83,12 @@ def edit_user(user_id):
     # Fill the text fields with the user's data
     form = EditUserForm(obj=user)
   
-    # Assign choices to form fields
+    # Assign dropdown choices to form fields
     form.role.choices = role_choices
     form.department.choices = department_choices
     form.manager.choices = manager_choices
     
-    # Set default values for select fields
+    # Set user values to dropdown fields
     form.role.data = user.role_id
     form.department.data = user.department_id
     form.manager.data = user.manager_id or 0  # Use 0 if manager_id is None

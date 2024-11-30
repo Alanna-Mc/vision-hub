@@ -7,28 +7,22 @@ from urllib.parse import urlsplit
 import sqlalchemy as sa
 
 
-@app.route('/index')
-#  Decorator part of Flask-login that prevents unautherised access by requiring login
-@login_required
-def index():
-    posts = [
-        {
-            'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
-        }
-    ]
-    return render_template('index.html', title='Home', posts=posts)
-
 @app.route('/')
 @app.route('/login', methods=['GET', 'POST'])
 def login():        
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        # Redirect authenticated users to their correct dashboards
+        if current_user.role.role_name == "Admin":
+            return redirect(url_for('admin_dashboard'))
+        elif current_user.role.role_name == "Manager":
+            return redirect(url_for('manager_dashboard'))
+        elif current_user.role.role_name == "Staff":
+            return redirect(url_for('staff_dashboard'))
+        else:
+            # Handle unauthenticated roles
+            return redirect(url_for('logout'))
     
+    # Login form logic
     form = LoginForm()
     if form.validate_on_submit():
         user = db.session.scalar(sa.select(User).where(User.username == form.username.data))
@@ -43,23 +37,39 @@ def login():
 
         # Get next_page if the user was trying to access a specific page
         next_page = request.args.get('next')
-        if next_page and urlsplit(next_page).netloc == '':
+        if next_page and urlsplit(next_page).netloc == '':                
             return redirect(next_page)
         
         # Redirect user based on role
         if user.role.role_name == "Admin":
-            return redirect(url_for('admin_dashboard'))
-        #elif user.role.role_name == "Manager":
-         #   return redirect(url_for('manager_dashboard'))
-        #elif user.role.role_name == "Staff":
-         #   return redirect(url_for('staff_dashboard'))
-        # Temp redirect for non-admins
-        return redirect(url_for('index'))
-    
+            return redirect(url_for('admin_dashboard'))            
+        elif user.role.role_name == "Manager":
+            return redirect(url_for('manager_dashboard'))
+        elif user.role.role_name == "Staff":
+            return redirect(url_for('staff_dashboard'))
+        else:
+            return redirect(url_for('logout'))
+
     return render_template('login.html', title='Sign In', form=form)
 
 
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('login'))
+
+
+@app.route('/dashboard_staff')
+@login_required
+def staff_dashboard():
+    if current_user.role.role_name!= "Staff":
+        return redirect(url_for('login'))
+    return render_template('/dashboard_staff.html', title='Staff Dashboard')
+
+
+@app.route('/dashboard_manager')
+@login_required
+def manager_dashboard():
+    if current_user.role.role_name!= "Manager":
+        return redirect(url_for('login'))
+    return render_template('/dashboard_manager.html', title='Manger Dashboard')
