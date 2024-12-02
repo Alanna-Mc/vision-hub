@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>{{ module.module_title }}</h2>
+<p><strong>Description:</strong> {{ module.module_description }}</p>
+<p><strong>Instructions:</strong> {{ module.module_instructions }}</p>
+<p><strong>Video:</strong> 
+    {% if module.video_url %}
+    <a href="{{ module.video_url }}" target="_blank">Watch Video</a>
+    {% else %}
+    No Video Available
+    {% endif %}
+</p>
+
+<h3>Questions</h3>
+{% if questions %}
+    <ol>
+        {% for question in questions %}
+        <li>
+            <p>{{ question.question_text }}</p>
+            <ul>
+                {% for option in question.options %}
+                <li>
+                    {{ option.option_text }}
+                    {% if option.is_correct %}
+                    <span class="badge bg-success">Correct</span>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </li>
+        {% endfor %}
+    </ol>
+{% else %}
+    <p>No questions available for this module.</p>
+{% endif %}
+
+<a href="{{ url_for('training_modules') }}" class="btn btn-secondary">Back to Modules</a>
+{% endblock %}

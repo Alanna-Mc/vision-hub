@@ -1,13 +1,13 @@
 from app import app, db
-from app.admin.forms import CreateUserForm, EditUserForm
-from app.models import User, Role, Department
+from app.admin.forms import CreateUserForm, EditUserForm, CreateTrainingModuleForm
+from app.models import User, Role, Department, TrainingModule, Question, Option
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_required
 from datetime import datetime
 
 @app.route('/admin/register', methods=['GET', 'POST'])
 def register_user():
-    if not current_user.is_authenticated or current_user.role.role_name != 'Admin':
+    if not current_user.is_authenticated or current_user.role.role_name != 'admin':
         return redirect(url_for('logout'))
 
     form = CreateUserForm()
@@ -47,7 +47,7 @@ def register_user():
 @app.route('/admin/dashboard')
 @login_required
 def admin_dashboard():
-    if current_user.role.role_name!= "Admin":
+    if current_user.role.role_name!= "admin":
         return redirect(url_for('logout'))
     return render_template('admin/dashboard.html', title='Admin Dashboard')
 
@@ -55,7 +55,7 @@ def admin_dashboard():
 @app.route('/admin/manage_users', methods=['GET'])
 @login_required
 def manage_users():
-    if current_user.role.role_name != "Admin":
+    if current_user.role.role_name != "admin":
         return redirect(url_for('logout'))
      
     try:
@@ -69,7 +69,7 @@ def manage_users():
 @app.route('/admin/edit_user/<int:user_id>', methods=['GET', 'POST'])
 @login_required
 def edit_user(user_id):
-    if current_user.role.role_name != "Admin":
+    if current_user.role.role_name != "admin":
         return redirect(url_for('logout'))
     
     # Retrieve the user to edit
@@ -122,3 +122,84 @@ def edit_user(user_id):
     
     return render_template('admin/editUser.html', title='Edit User', form=form, user=user)
 
+
+@app.route('/admin/create_training_module', methods=['GET', 'POST'])
+@login_required
+def create_training_module():
+    if current_user.role.role_name != "admin":
+        return redirect(url_for('logout'))
+
+    form = CreateTrainingModuleForm()
+
+    if form.validate_on_submit():
+        # Create the training module
+        training_module = TrainingModule(
+            module_title=form.module_title.data,
+            module_description=form.module_description.data,
+            module_instructions=form.module_instructions.data,
+            video_url=form.video_url.data or None
+        )
+        db.session.add(training_module)
+        db.session.flush()  # Save the module and get its ID
+
+        # Create questions and their options
+        for question_form in form.questions:
+            question = Question(
+                question_text=question_form.question_text.data,
+                training_module=training_module
+            )
+            db.session.add(question)
+            db.session.flush()  # Save the question and get its ID
+
+            # Add options
+            for option_form in question_form.options:
+                option = Option(
+                    option_text=option_form.option_text.data,
+                    is_correct=option_form.is_correct.data,
+                    question=question
+                )
+                db.session.add(option)
+        
+        db.session.commit()  # Save everything to the database
+        flash(f'Training module "{training_module.module_title}" has been successfully created!')
+        return redirect(url_for('admin_dashboard'))
+
+    return render_template('admin/create_training_module.html', title='Create Training Module', form=form)
+
+
+@app.route('/admin/manage_training_modules', methods=['GET'])
+@login_required
+def manage_training_modules():
+    # Ensure only admins can access this page
+    if current_user.role.role_name != "admin":
+        return redirect(url_for('logout'))
+    
+    # Fetch all training modules
+    modules = TrainingModule.query.all()
+    
+    # Render the template with the modules
+    return render_template(
+        'admin/manage_training_modules.html',
+        title='Manage Training Modules',
+        modules=modules
+    )
+
+@app.route('/admin/details_training_module/<int:module_id>', methods=['GET'])
+@login_required
+def details_training_module(module_id):
+    # Ensure only admins can access this page
+    if current_user.role.role_name != "admin":
+        return redirect(url_for('logout'))
+    
+    # Fetch the specific training module
+    module = TrainingModule.query.get_or_404(module_id)
+    
+    # Fetch questions related to the module
+    questions = Question.query.filter_by(training_module_id=module_id).all()
+    
+    return render_template(
+        'admin/details_training_modules.html',  # Template name updated for clarity
+        title=f'{module.module_title} Details',
+        module=module,
+        questions=questions
+    )

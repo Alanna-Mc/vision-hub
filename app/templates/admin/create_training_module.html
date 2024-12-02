@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Create Training Module</h2>
+<form method="POST" action="">
+    {{ form.hidden_tag() }}
+    
+    <div>
+        {{ form.module_title.label }}
+        {{ form.module_title(class="form-control") }}
+        {% for error in form.module_title.errors %}
+            <p class="text-danger">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    <div>
+        {{ form.module_description.label }}
+        {{ form.module_description(class="form-control", rows=3) }}
+        {% for error in form.module_description.errors %}
+            <p class="text-danger">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    <div>
+        {{ form.module_instructions.label }}
+        {{ form.module_instructions(class="form-control", rows=3) }}
+        {% for error in form.module_instructions.errors %}
+            <p class="text-danger">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    <div>
+        {{ form.video_url.label }}
+        {{ form.video_url(class="form-control") }}
+        {% for error in form.video_url.errors %}
+            <p class="text-danger">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    <h3>Questions</h3>
+    <div id="questions">
+        {% for question_form in form.questions %}
+        <div>
+            <h4>Question {{ loop.index }}</h4>
+            {{ question_form.question_text.label }}
+            {{ question_form.question_text(class="form-control", rows=2) }}
+            {% for error in question_form.question_text.errors %}
+                <p class="text-danger">{{ error }}</p>
+            {% endfor %}
+            
+            <h5>Options</h5>
+            {% for option_form in question_form.options %}
+            <div>
+                {{ option_form.option_text.label }}
+                {{ option_form.option_text(class="form-control") }}
+                {{ option_form.is_correct.label }}
+                {{ option_form.is_correct() }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <div>
+        {{ form.submit(class="btn btn-primary") }}
+    </div>
+</form>
+{% endblock %}

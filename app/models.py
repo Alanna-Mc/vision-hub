@@ -137,7 +137,7 @@ class Question (db.Model):
     training_module_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('training_module.id'), nullable=False)
     training_module: so.Mapped['TrainingModule'] = so.relationship('TrainingModule', back_populates='questions')
 
-    option: so.Mapped[List['Option']] = so.relationship('Option', back_populates='question', cascade='all, delete-orphan')
+    options: so.Mapped[List['Option']] = so.relationship('Option', back_populates='question', cascade='all, delete-orphan')
 
 
 class Option (db.Model):

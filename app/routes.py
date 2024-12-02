@@ -12,11 +12,11 @@ import sqlalchemy as sa
 def login():        
     if current_user.is_authenticated:
         # Redirect authenticated users to their correct dashboards
-        if current_user.role.role_name == "Admin":
+        if current_user.role.role_name == "admin":
             return redirect(url_for('admin_dashboard'))
-        elif current_user.role.role_name == "Manager":
+        elif current_user.role.role_name == "manager":
             return redirect(url_for('manager_dashboard'))
-        elif current_user.role.role_name == "Staff":
+        elif current_user.role.role_name == "staff":
             return redirect(url_for('staff_dashboard'))
         else:
             # Handle unauthenticated roles
@@ -41,11 +41,11 @@ def login():
             return redirect(next_page)
         
         # Redirect user based on role
-        if user.role.role_name == "Admin":
+        if user.role.role_name == "admin":
             return redirect(url_for('admin_dashboard'))            
-        elif user.role.role_name == "Manager":
+        elif user.role.role_name == "manager":
             return redirect(url_for('manager_dashboard'))
-        elif user.role.role_name == "Staff":
+        elif user.role.role_name == "staff":
             return redirect(url_for('staff_dashboard'))
         else:
             return redirect(url_for('logout'))
@@ -62,7 +62,7 @@ def logout():
 @app.route('/dashboard_staff')
 @login_required
 def staff_dashboard():
-    if current_user.role.role_name!= "Staff":
+    if current_user.role.role_name!= "staff":
         return redirect(url_for('login'))
     return render_template('/dashboard_staff.html', title='Staff Dashboard')
 
@@ -70,6 +70,6 @@ def staff_dashboard():
 @app.route('/dashboard_manager')
 @login_required
 def manager_dashboard():
-    if current_user.role.role_name!= "Manager":
+    if current_user.role.role_name!= "manager":
         return redirect(url_for('login'))
     return render_template('/dashboard_manager.html', title='Manger Dashboard')

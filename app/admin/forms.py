@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, RadioField, SubmitField, SelectField, DateField
-from wtforms.validators import ValidationError, DataRequired, EqualTo, Optional
+from wtforms import StringField, PasswordField, RadioField, SubmitField, SelectField, DateField, TextAreaField, URLField, FormField, FieldList, BooleanField
+from wtforms.validators import ValidationError, DataRequired, EqualTo, Optional, URL, Length
 import sqlalchemy as sa
 from app import db
 from app.models import User, Department, Role
@@ -45,4 +45,27 @@ class EditUserForm(FlaskForm):
     job_title = StringField('Position', validators=[DataRequired()])
     dateStarted = DateField('Start Date', format='%d-%m-%y', validators=[Optional()])
     submit = SubmitField('Edit Details')
+
+
+class QuestionForm(FlaskForm):
+    question_text = TextAreaField("Question Text", validators=[DataRequired(), Length(max=1000)])
+    options = FieldList(FormField(
+            type('OptionForm', (FlaskForm,), {
+                'option_text': StringField("Option Text", validators=[DataRequired(), Length(max=500)]),
+                'is_correct': BooleanField("Is Correct")
+            })
+        ), 
+        min_entries=2, 
+        max_entries=4
+    )
+
     
+class CreateTrainingModuleForm(FlaskForm):
+    module_title = StringField("Module Title", validators=[DataRequired(), Length(max=150)])
+    module_description = TextAreaField("Description", validators=[DataRequired()])
+    module_instructions = TextAreaField("Instructions", validators=[DataRequired()])
+    video_url = URLField("Video URL (Optional)", validators=[Optional(), URL(require_tld=True), Length(max=300)])
+    questions = FieldList(FormField(QuestionForm), min_entries=1, max_entries=20)
+    submit = SubmitField("Create Training Module")
+
+
