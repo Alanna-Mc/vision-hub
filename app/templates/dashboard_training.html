@@ -1,6 +1,21 @@
 {% extends "base.html" %}
-
 {% block content %}
-<h1>Training Dashboard</h1>
+<h2>Training Dashboard</h2>
 
-{% end block content %}
+{% if steps %}
+    <ul>
+        {% for step in steps %}
+        <li>
+            <h4>{{ step.step_name }}</h4>
+            <p>{{ step.step_description }}</p>
+            {% if step.training_module %}
+            
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No training modules assigned.</p>
+{% endif %}
+
+{% endblock %}

@@ -73,3 +73,20 @@ def manager_dashboard():
     if current_user.role.role_name!= "manager":
         return redirect(url_for('login'))
     return render_template('/dashboard_manager.html', title='Manger Dashboard')
+
+
+@app.route('/dashboard_training', methods=['GET'])
+@login_required
+def training_dashboard():
+    if current_user.role.role_name != "staff":
+        return redirect(url_for('logout'))
+    
+    # Fetch the onboarding steps and training modules for the user's path
+    onboarding_path = current_user.onboarding_path
+    if onboarding_path:
+        steps = onboarding_path.steps
+    else:
+        steps = []
+    
+    return render_template(
+        '/dashboard_training', title="Training Dashboard")
