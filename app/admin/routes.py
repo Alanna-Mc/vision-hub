@@ -198,7 +198,7 @@ def details_training_module(module_id):
     questions = Question.query.filter_by(training_module_id=module_id).all()
     
     return render_template(
-        'admin/details_training_modules.html',  # Template name updated for clarity
+        'admin/details_training_module.html', 
         title=f'{module.module_title} Details',
         module=module,
         questions=questions
