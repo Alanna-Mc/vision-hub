@@ -181,3 +181,38 @@ class UserQuestionAnswer (db.Model):
 
     selected_option_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('option.id'), nullable=True)
     selected_option: so.Mapped['Option'] = so.relationship('Option')
+
+
+class OnboardingPath(db.Model):
+    """
+    Represents an onboarding path for a staff type (e.g., office, operational).
+    """
+    __tablename__ = 'onboarding_path'
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    path_name: so.Mapped[str] = so.mapped_column(sa.String(100), nullable=False, unique=True)
+
+    # Relationship with onboarding steps
+    steps: so.Mapped[List['OnboardingStep']] = so.relationship('OnboardingStep', back_populates='path', cascade='all, delete-orphan')
+
+    def __repr__(self):
+        return f"<OnboardingPath {self.path_name}>"
+    
+
+class OnboardingStep(db.Model):
+    """
+    Represents a single step in an onboarding path, such as a training module.
+    """
+    __tablename__ = 'onboarding_step'
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    step_name: so.Mapped[str] = so.mapped_column(sa.String(150), nullable=False)
+    step_description: so.Mapped[str] = so.mapped_column(sa.Text, nullable=True)
+    
+    onboarding_path_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('onboarding_path.id'), nullable=False)
+    path: so.Mapped['OnboardingPath'] = so.relationship('OnboardingPath', back_populates='steps')
+
+    # Relationship with training modules
+    training_module_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('training_module.id'), nullable=True)
+    training_module: so.Mapped['TrainingModule'] = so.relationship('TrainingModule')
+
+    def __repr__(self):
+        return f"<OnboardingStep {self.step_name}>"
