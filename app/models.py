@@ -44,7 +44,7 @@ class User(UserMixin, db.Model):
     first_name: so.Mapped[str] = so.mapped_column(sa.String(50), index=True)
     surname: so.Mapped[str] = so.mapped_column(sa.String(50), index=True)
     job_title: so.Mapped[str] = so.mapped_column(sa.String(50), index=True)
-    password_hash: so.Mapped[str] = so.mapped_column(sa.String(256)),
+    password_hash: so.Mapped[str] = so.mapped_column(sa.String(256))
     is_onboarding: so.Mapped[bool] = so.mapped_column(default=False) # Default: Not onboarding
     dateStarted: so.Mapped[datetime] = so.mapped_column(index=True, default=lambda: datetime.now(timezone.utc))
     
@@ -420,8 +420,8 @@ class DocumentRepository(db.Model):
         return f"<DocumentRepository {self.document_title}>"
 
     
-    class Report(db.Model):
-     """
+class Report(db.Model):
+    """
     Represents a report in the system.
     
     Attributes:
