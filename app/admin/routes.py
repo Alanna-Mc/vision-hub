@@ -1,6 +1,6 @@
 from app import app, db
 from app.admin.forms import CreateUserForm, EditUserForm, CreateTrainingModuleForm
-from app.models import User, Role, Department, TrainingModule, Question, Option
+from app.models import User, Role, Department, TrainingModule, Question, Option, OnboardingPath
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_required
 from datetime import datetime
@@ -19,6 +19,14 @@ def register_user():
 
     # Form data
     if form.validate_on_submit():
+
+        # Determine the onboarding path based on the department
+        department_id = int(form.department.data)
+        if Department.query.filter_by(id=department_id, department_name="office").first():
+            onboarding_path = OnboardingPath.query.filter_by(path_name="office staff").first()
+        else:
+            onboarding_path = OnboardingPath.query.filter_by(path_name="operational staff").first()
+       
         # Create a new user instance
         user = User(
             first_name=form.firstName.data,
@@ -28,6 +36,7 @@ def register_user():
             is_onboarding=(form.is_onboarding.data == 'yes'),
             manager_id=int(form.manager.data) if form.manager.data else None,
             department_id=int(form.department.data),
+            onboarding_path_id=onboarding_path.id if onboarding_path else None,
             dateStarted= datetime.now(),
             job_title=form.job_title.data
         )

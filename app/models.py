@@ -44,6 +44,10 @@ class User(UserMixin, db.Model):
     job_title: so.Mapped[str] = so.mapped_column(sa.String(50), index=True)
     module_progress: so.Mapped[List['UserModuleProgress']] = so.relationship('UserModuleProgress', back_populates='user')
 
+    onboarding_path_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('onboarding_path.id'), nullable=True)
+    onboarding_path: so.Mapped['OnboardingPath'] = so.relationship('OnboardingPath')
+
+
     def __repr__(self):
         """
         Returns a string representation of the User object.
