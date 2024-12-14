@@ -7,9 +7,13 @@
         {% for step in steps %}
         <li>
             <h4>{{ step.step_name }}</h4>
-            <p>{{ step.step_description }}</p>
             {% if step.training_module %}
-            
+                <p>{{ step.training_module.module_description }}</p>
+                <a href="{{ url_for('take_training_module', module_id=step.training_module.id) }}" class="btn btn-primary">
+                    Take this Training
+                </a>
+            {% else %}
+                <p>No module assigned to this step.</p>
             {% endif %}
         </li>
         {% endfor %}

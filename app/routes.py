@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request
 from app.forms import LoginForm
 from app import app, db
-from app.models import User
+from app.models import User, TrainingModule, UserModuleProgress, Option, UserQuestionAnswer
 from flask_login import current_user, login_user, logout_user, login_required
 from urllib.parse import urlsplit
 import sqlalchemy as sa
@@ -88,5 +88,47 @@ def training_dashboard():
     else:
         steps = []
     
-    return render_template(
-        '/dashboard_training', title="Training Dashboard")
+    return render_template('dashboard_training.html', title="Training Dashboard", steps=steps)
+
+
+from datetime import datetime, timezone
+
+@app.route('/staff/take_training_module/<int:module_id>', methods=['GET', 'POST'])
+@login_required
+def take_training_module(module_id):
+    if current_user.role.role_name != 'staff':
+        return redirect(url_for('logout'))
+    
+    module = TrainingModule.query.get_or_404(module_id)
+
+    if request.method == 'POST':
+        # User submitted their answers, save their progress.
+        progress = UserModuleProgress(user_id=current_user.id, training_module_id=module_id, start_date=datetime.now(timezone.utc))
+        db.session.add(progress)
+        db.session.flush()
+
+        # For each question, get the selected option
+        for question in module.questions:
+            selected_option_id = request.form.get(f'question_{question.id}')
+            selected_option = Option.query.get(selected_option_id) if selected_option_id else None
+            is_correct = selected_option.is_correct if selected_option else False
+
+            answer = UserQuestionAnswer(
+                progress=progress,
+                question=question,
+                selected_option=selected_option,
+                is_correct=is_correct
+            )
+            db.session.add(answer)
+
+        # Calculate score
+        score = sum(1 for ans in progress.answers if ans.is_correct)
+        progress.score = score
+        progress.completed_date = datetime.now(timezone.utc)
+
+        db.session.commit()
+        flash("Your training results have been saved!")
+        return redirect(url_for('training_dashboard'))
+    
+    # If GET, show the module questions
+    return render_template('take_training_module.html', module=module, title=module.module_title)

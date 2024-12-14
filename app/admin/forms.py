@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, RadioField, SubmitField, SelectField, DateField, TextAreaField, URLField, FormField, FieldList, BooleanField
+from wtforms import StringField, PasswordField, RadioField, SubmitField, SelectField, DateField, TextAreaField, URLField, FormField, FieldList, BooleanField, SelectMultipleField
 from wtforms.validators import ValidationError, DataRequired, EqualTo, Optional, URL, Length
 import sqlalchemy as sa
 from app import db
@@ -44,28 +44,32 @@ class EditUserForm(FlaskForm):
     department = SelectField('Department', coerce=int, validators=[DataRequired()])
     job_title = StringField('Position', validators=[DataRequired()])
     dateStarted = DateField('Start Date', format='%d-%m-%y', validators=[Optional()])
-    submit = SubmitField('Edit Details')
+    submit = SubmitField('Edit Details')             
 
+
+class OptionForm(FlaskForm):
+    option_text = StringField("Option Text", validators=[DataRequired(), Length(max=500)])
+    is_correct = BooleanField("Is Correct")
+
+    class Meta:
+        csrf = False
 
 class QuestionForm(FlaskForm):
     question_text = TextAreaField("Question Text", validators=[DataRequired(), Length(max=1000)])
-    options = FieldList(FormField(
-            type('OptionForm', (FlaskForm,), {
-                'option_text': StringField("Option Text", validators=[DataRequired(), Length(max=500)]),
-                'is_correct': BooleanField("Is Correct")
-            })
-        ), 
-        min_entries=2, 
-        max_entries=4
-    )
+    option1 = FormField(OptionForm)
+    option2 = FormField(OptionForm)
+    option3 = FormField(OptionForm)
+    option4 = FormField(OptionForm)
 
-    
+    class Meta:
+        csrf = False
+
 class CreateTrainingModuleForm(FlaskForm):
     module_title = StringField("Module Title", validators=[DataRequired(), Length(max=150)])
     module_description = TextAreaField("Description", validators=[DataRequired()])
     module_instructions = TextAreaField("Instructions", validators=[DataRequired()])
     video_url = URLField("Video URL (Optional)", validators=[Optional(), URL(require_tld=True), Length(max=300)])
+    pathways = SelectMultipleField("Assign to Pathways", coerce=int, validators=[DataRequired()])
     questions = FieldList(FormField(QuestionForm), min_entries=1, max_entries=20)
     submit = SubmitField("Create Training Module")
-
 

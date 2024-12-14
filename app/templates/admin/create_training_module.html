@@ -1,5 +1,5 @@
-{% extends "base.html" %}
 
+{% extends "base.html" %}
 {% block content %}
 <h2>Create Training Module</h2>
 <form method="POST" action="">
@@ -37,36 +37,64 @@
         {% endfor %}
     </div>
 
+    <div>
+        {{ form.pathways.label }}
+        {{ form.pathways(class="form-control") }}
+        {% for error in form.pathways.errors %}
+            <p class="text-danger">{{ error }}</p>
+        {% endfor %}
+    </div>
+
     <h3>Questions</h3>
     <div id="questions">
         {% for question_form in form.questions %}
-        <div>
+        <div class="question-block mb-4 border p-3">
             <h4>Question {{ loop.index }}</h4>
             {{ question_form.question_text.label }}
-            {{ question_form.question_text(class="form-control", rows=2) }}
+            {{ question_form.question_text(class="form-control") }}
             {% for error in question_form.question_text.errors %}
                 <p class="text-danger">{{ error }}</p>
             {% endfor %}
             
             <h5>Options</h5>
-            {% for option_form in question_form.options %}
-            <div>
-                {{ option_form.option_text.label }}
-                {{ option_form.option_text(class="form-control") }}
-                {{ option_form.is_correct.label }}
-                {{ option_form.is_correct() }}
+            <div class="form-group">
+                <label>Option 1</label>
+                {{ question_form.option1.option_text(class="form-control") }}
+                {{ question_form.option1.is_correct.label }}
+                {{ question_form.option1.is_correct() }}
             </div>
-            {% endfor %}
+
+            <div class="form-group">
+                <label>Option 2</label>
+                {{ question_form.option2.option_text(class="form-control") }}
+                {{ question_form.option2.is_correct.label }}
+                {{ question_form.option2.is_correct() }}
+            </div>
+            <div class="form-group">
+                <label>Option 3</label>
+                {{ question_form.option3.option_text(class="form-control") }}
+                {{ question_form.option3.is_correct.label }}
+                {{ question_form.option3.is_correct() }}
+            </div>
+            <div class="form-group">
+                <label>Option 4</label>
+                {{ question_form.option4.option_text(class="form-control") }}
+                {{ question_form.option4.is_correct.label }}
+                {{ question_form.option4.is_correct() }}
+            </div>
         </div>
         {% endfor %}
     </div>
 
-    <div>
+
+    <div class="my-3">
         {{ form.submit(class="btn btn-primary") }}
+        <button type="submit" name="add_question" value="1" class="btn btn-secondary">Add Another Question</button>
     </div>
 
     <div>
-        <a href="{{ url_for('manage_training_modules') }}" class="btn">Back</a>
+        <a href="{{ url_for('manage_training_modules') }}" class="btn btn-link">Back</a>
     </div>
 </form>
+
 {% endblock %}

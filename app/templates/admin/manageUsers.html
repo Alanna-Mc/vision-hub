@@ -16,6 +16,7 @@
                     <th>Role</th>
                     <th>Onboarding</th>
                     <th>Manager</th>
+                    <th>Pathway</th>
                 </tr>
             </thead>
             <tbody>
@@ -32,6 +33,13 @@
                     <td>
                         {% if user.manager_id %}
                             {{ user.manager.first_name }} {{ user.manager.surname }}
+                        {% else %}
+                            None
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if user.onboarding_path %}
+                            {{ user.onboarding_path.path_name }}
                         {% else %}
                             None
                         {% endif %}

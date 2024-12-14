@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ module.module_title }}</h2>
+<p>{{ module.module_instructions }}</p>
+
+<form method="POST" action="">
+    
+    {% for question in module.questions %}
+    <div class="mb-3">
+        <h4>{{ question.question_text }}</h4>
+        {% for option in question.options %}
+        <div class="form-check">
+            <input class="form-check-input" type="radio" 
+                   name="question_{{question.id}}" 
+                   value="{{ option.id }}" 
+                   id="option_{{option.id}}">
+            <label class="form-check-label" for="option_{{option.id}}">
+                {{ option.option_text }}
+            </label>
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+    
+    <button type="submit" class="btn btn-success">Submit Training</button>
+    <a href="{{ url_for('training_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+</form>
+{% endblock %}

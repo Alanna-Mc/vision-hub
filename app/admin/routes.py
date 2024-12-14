@@ -1,6 +1,6 @@
 from app import app, db
 from app.admin.forms import CreateUserForm, EditUserForm, CreateTrainingModuleForm
-from app.models import User, Role, Department, TrainingModule, Question, Option, OnboardingPath
+from app.models import User, Role, Department, TrainingModule, Question, Option, OnboardingPath, OnboardingStep
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_required
 from datetime import datetime
@@ -140,41 +140,77 @@ def create_training_module():
 
     form = CreateTrainingModuleForm()
 
+    form.pathways.choices = [(path.id, path.path_name) for path in OnboardingPath.query.all()]
+
+    # Check if the user wants to add another question
+    if request.method == 'POST' and 'add_question' in request.form:
+        # Add another empty question to the FieldList
+        form.questions.append_entry()
+        # Re-render the form with the new question included
+        return render_template('admin/create_training_module.html', title='Create Training Module', form=form)
+
     if form.validate_on_submit():
-        # Create the training module
-        training_module = TrainingModule(
-            module_title=form.module_title.data,
-            module_description=form.module_description.data,
-            module_instructions=form.module_instructions.data,
-            video_url=form.video_url.data or None
-        )
-        db.session.add(training_module)
-        db.session.flush()  # Save the module and get its ID
-
-        # Create questions and their options
-        for question_form in form.questions:
-            question = Question(
-                question_text=question_form.question_text.data,
-                training_module=training_module
-            )
-            db.session.add(question)
-            db.session.flush()  # Save the question and get its ID
-
-            # Add options
-            for option_form in question_form.options:
-                option = Option(
-                    option_text=option_form.option_text.data,
-                    is_correct=option_form.is_correct.data,
-                    question=question
+        try:
+            # Create the training module
+            training_module = TrainingModule(
+                module_title=form.module_title.data,
+                module_description=form.module_description.data,
+                module_instructions=form.module_instructions.data,
+                video_url=form.video_url.data or None
                 )
-                db.session.add(option)
-        
-        db.session.commit()  # Save everything to the database
-        flash(f'Training module "{training_module.module_title}" has been successfully created!')
-        return redirect(url_for('admin_dashboard'))
+            db.session.add(training_module)
+            db.session.flush()
+
+            # Assign module to selected pathways
+            for pathway_id in form.pathways.data:
+                pathway = OnboardingPath.query.get(pathway_id)
+                if pathway:
+                    onboarding_step = OnboardingStep(
+                        step_name=training_module.module_title,
+                        path=pathway,
+                        training_module=training_module
+                    )
+                    db.session.add(onboarding_step) 
+            
+            # Ensure at least one question is provided
+            if not form.questions.data or len(form.questions.data) < 1:
+                flash("You must add at least one question for the training module.")
+                db.session.rollback()
+                return redirect(url_for('create_training_module'))
+            
+            # Create questions and options
+            for question_form in form.questions:
+                question = Question(
+                    question_text=question_form.question_text.data,
+                    training_module=training_module
+                )
+                db.session.add(question)
+                db.session.flush()
+
+                for option_form in [question_form.option1, question_form.option2, question_form.option3, question_form.option4]:
+                    option = Option(
+                        option_text=option_form.option_text.data,
+                        is_correct=option_form.is_correct.data,
+                        question=question
+                    )
+                    db.session.add(option)
+
+            # Save everything to the database
+            db.session.commit()  
+            flash(f'Training module "{training_module.module_title}" has been successfully created!')
+            return redirect(url_for('admin_dashboard'))
+    
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error: {str(e)}')
+            return redirect(url_for('create_training_module'))
+    else:
+        print("Form errors:", form.errors)
+        flash("There are errors in your form submission.")
 
     return render_template('admin/create_training_module.html', title='Create Training Module', form=form)
 
+    
 
 @app.route('/admin/manage_training_modules', methods=['GET'])
 @login_required
