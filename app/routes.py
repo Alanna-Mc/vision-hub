@@ -81,14 +81,42 @@ def training_dashboard():
     if current_user.role.role_name != "staff":
         return redirect(url_for('logout'))
     
-    # Fetch the onboarding steps and training modules for the user's path
+    # Get the onboarding steps and training modules for the user's path
     onboarding_path = current_user.onboarding_path
     if onboarding_path:
         steps = onboarding_path.steps
     else:
         steps = []
+
+    # Separate modules by status
+    completed_modules = []
+    incomplete_modules = []
+    in_progress_modules = []
+
+    for step in steps:
+        module = step.training_module
+        if module:
+            progress = UserModuleProgress.query.filter_by(user_id=current_user.id,training_module_id=module.id).order_by(UserModuleProgress.id.desc()).first()
+
+            # Completed Module
+            if progress and progress.completed_date:
+                correct_answers = progress.score
+                total_questions = len(module.questions)
+                passing_threshold = 0.7
+                passed = (correct_answers / total_questions) >= passing_threshold
+                completed_modules.append({
+                    'module': module,
+                    'score': progress.score,
+                    'passed': passed
+                })
+            elif progress and not progress.completed_date:
+                # In-progress
+                in_progress_modules.append(module)
+            else:
+                # Not started
+                incomplete_modules.append(module)
     
-    return render_template('dashboard_training.html', title="Training Dashboard", steps=steps)
+    return render_template('dashboard_training.html', title="Training Dashboard", incomplete_modules=incomplete_modules, in_progress_modules=in_progress_modules, completed_modules=completed_modules)
 
 
 from datetime import datetime, timezone
@@ -101,13 +129,24 @@ def take_training_module(module_id):
     
     module = TrainingModule.query.get_or_404(module_id)
 
+    # Check if the user already has progress for this module
+    progress = UserModuleProgress.query.filter_by(user_id=current_user.id, training_module_id=module_id).order_by(UserModuleProgress.id.desc()).first()
+
     if request.method == 'POST':
-        # User submitted their answers, save their progress.
-        progress = UserModuleProgress(user_id=current_user.id, training_module_id=module_id, start_date=datetime.now(timezone.utc))
+        action = request.form.get('action', 'submit')
+        
+        # Create progress for the user if they do not have any
+        if not progress:
+            progress = UserModuleProgress(user_id=current_user.id, training_module_id=module_id, start_date=datetime.now(timezone.utc), attempts=1)
         db.session.add(progress)
         db.session.flush()
 
-        # For each question, get the selected option
+        # Update answers
+        for existing_answer in progress.answers:
+            db.session.delete(existing_answer)
+        db.session.flush()
+
+        # Record the user’s current answers
         for question in module.questions:
             selected_option_id = request.form.get(f'question_{question.id}')
             selected_option = Option.query.get(selected_option_id) if selected_option_id else None
@@ -121,14 +160,33 @@ def take_training_module(module_id):
             )
             db.session.add(answer)
 
-        # Calculate score
-        score = sum(1 for ans in progress.answers if ans.is_correct)
-        progress.score = score
-        progress.completed_date = datetime.now(timezone.utc)
+        # Save users current progress
+        if action == "save":
+            db.session.commit()
+            flash("Your progress has been saved")
+            return redirect(url_for('training_dashboard'))
+        # Finalise attempt and calculate score
+        else:
+            correct_answers = sum(1 for ans in progress.answers if ans.is_correct)
+            total_questions = len(module.questions)
+            progress.score = correct_answers
+            progress.completed_date = datetime.now(timezone.utc)
 
-        db.session.commit()
-        flash("Your training results have been saved!")
-        return redirect(url_for('training_dashboard'))
+            passing_threshold = 0.5
+            if (correct_answers / total_questions) >= passing_threshold:
+                flash("Module completed! You passed.")
+            else:
+                flash("Module completed, but you did not pass. Please retake module.")
+            
+            db.session.commit() 
+            return redirect(url_for('training_dashboard'))
+
     
-    # If GET, show the module questions
-    return render_template('take_training_module.html', module=module, title=module.module_title)
+    # Display the module questions
+    # Load saved progress if any
+    user_answers = {}
+    if progress and not progress.completed_date:
+        for ans in progress.answers:
+            user_answers[ans.question_id] = ans.selected_option_id
+
+    return render_template('take_training_module.html', module=module, title=module.module_title, user_answers=user_answers)
