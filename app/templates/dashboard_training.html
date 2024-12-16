@@ -3,9 +3,9 @@
 <h2>Training Dashboard</h2>
 
 <h3>Not Started</h3>
-{% if incomplete_modules %}
+{% if to_be_completed_modules %}
     <ul>
-    {% for module in incomplete_modules %}
+    {% for module in to_be_completed_modules %}
         <li>
             <h4>{{ module.module_title }}</h4>
             <p>{{ module.module_description }}</p>
@@ -41,6 +41,7 @@
     <ul>
     {% for entry in completed_modules %}
         <li>
+            <!-- entry is a dictionary: entry['module'] is the TrainingModule object -->
             <h4>{{ entry.module.module_title }}</h4>
             <p>{{ entry.module.module_description }}</p>
             <p>Score: {{ entry.score }} / {{ entry.module.questions|length }}</p>
@@ -60,6 +61,4 @@
 <p>
     <a href="{{ url_for('staff_dashboard') }}" class="btn">Back</a>
 </p>
-
 {% endblock %}
-
