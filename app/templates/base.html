@@ -9,41 +9,37 @@
             <link 
             href="{{ url_for('static', filename='css/bootstrap.min.css') }}" 
             rel="stylesheet"/>
-    
+            <link href="{{ url_for('static', filename='css/stylesheet.css') }}" rel="stylesheet"/>
         </head>
     <body>
-        
         <!-- Sidebar -->
          <div class="sidebar">
-            <img src="https://via.placeholder.com/80" alt="Profile">
-            <h5>{{ current_user.first_name }}</h5>
-            <!-- <nav class="nav flex-column">
+            <div class="profile-container">
+                <img src="{{ url_for('static', filename='images/profilePhoto/profileDefault.png') }}" class="profilePicture">
+                <h5>{{ current_user.first_name }} {{ current_user.surname }}</h5>
+            </div>
+            <nav class="nav flex-column">
                 <a class="nav-link text-white" href="#">Onboarding</a>
-                <a class="nav-link text-white" href="#">Training</a>
-                <a class="nav-link text-white" href="#">Knowledge Base</a>
-            </nav> --> 
+            </nav>
+            <img src="{{ url_for('static', filename='images/loginLogo(2).svg') }}" class="sidebarLogo">
         </div>
-        
-        <div>Vision Hub:
-            {% if current_user.is_anonymous %}
-            <a href="{{ url_for('login') }}">Login</a>
-            {% else %}
-            <a href="{{ url_for('logout') }}">Logout</a>
-            {% endif %}
+
+         <!-- Top Bar -->
+         <div class="top-bar">
+            <div class="d-flex align-items-center">
+                <span class="me-3" id="clock"></span>
+                <a href="{{ url_for('logout') }}" class="logout-link">
+                    <img src="{{ url_for('static', filename='images/logout.png') }}" class="logout-image">
+                </a>
+            </div>
         </div>
-        <hr>
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul>
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-        {% block content %}{% endblock %}
 
-       
+        <!-- Content Area -->
+        <div class="content">
+        </div>
 
+        {% block content %}
+        {% endblock %}
+        <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
     </body>
 </html>
