@@ -141,24 +141,25 @@ def take_training_module(module_id):
         db.session.add(progress)
         db.session.flush()
 
-        # Update answers
-        for existing_answer in progress.answers:
-            db.session.delete(existing_answer)
-        db.session.flush()
+        existing_answers = {ans.question_id: ans for ans in progress.answers}
 
-        # Record the user’s current answers
         for question in module.questions:
             selected_option_id = request.form.get(f'question_{question.id}')
-            selected_option = Option.query.get(selected_option_id) if selected_option_id else None
-            is_correct = selected_option.is_correct if selected_option else False
+            if selected_option_id:
+                selected_option = Option.query.get(selected_option_id)
+                is_correct = selected_option.is_correct if selected_option else False
 
-            answer = UserQuestionAnswer(
-                progress=progress,
-                question=question,
-                selected_option=selected_option,
-                is_correct=is_correct
-            )
-            db.session.add(answer)
+                # Update existing answer
+                if question.id in existing_answers:
+                    existing_answers[question.id].selected_option = selected_option
+                    existing_answers[question.id].is_correct = is_correct
+                # Add new answer
+                else:
+                    new_answer = UserQuestionAnswer(progress=progress, question=question, selected_option=selected_option, is_correct=is_correct)
+                    db.session.add(new_answer)
+            # Accomodate blank answers
+            else:
+                pass
 
         # Save users current progress
         if action == "save":

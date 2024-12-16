@@ -2,24 +2,59 @@
 {% block content %}
 <h2>Training Dashboard</h2>
 
-{% if steps %}
+<h3>Not Started</h3>
+{% if incomplete_modules %}
     <ul>
-        {% for step in steps %}
+    {% for module in incomplete_modules %}
         <li>
-            <h4>{{ step.step_name }}</h4>
-            {% if step.training_module %}
-                <p>{{ step.training_module.module_description }}</p>
-                <a href="{{ url_for('take_training_module', module_id=step.training_module.id) }}" class="btn btn-primary">
-                    Take this Training
-                </a>
-            {% else %}
-                <p>No module assigned to this step.</p>
-            {% endif %}
+            <h4>{{ module.module_title }}</h4>
+            <p>{{ module.module_description }}</p>
+            <a href="{{ url_for('take_training_module', module_id=module.id) }}" class="btn btn-primary">
+                Start Module
+            </a>
         </li>
-        {% endfor %}
+    {% endfor %}
     </ul>
 {% else %}
-    <p>No training modules assigned.</p>
+    <p>You have no incomplete modules to start.</p>
+{% endif %}
+
+<h3>In Progress</h3>
+{% if in_progress_modules %}
+    <ul>
+    {% for module in in_progress_modules %}
+        <li>
+            <h4>{{ module.module_title }}</h4>
+            <p>{{ module.module_description }}</p>
+            <a href="{{ url_for('take_training_module', module_id=module.id) }}" class="btn btn-warning">
+                Resume Module
+            </a>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>You have no modules in progress.</p>
+{% endif %}
+
+<h3>Completed</h3>
+{% if completed_modules %}
+    <ul>
+    {% for entry in completed_modules %}
+        <li>
+            <h4>{{ entry.module.module_title }}</h4>
+            <p>{{ entry.module.module_description }}</p>
+            <p>Score: {{ entry.score }} / {{ entry.module.questions|length }}</p>
+            {% if entry.passed %}
+                <span class="badge bg-success">Passed</span>
+            {% else %}
+                <span class="badge bg-danger">Failed</span>
+                <a href="{{ url_for('take_training_module', module_id=entry.module.id) }}" class="btn btn-secondary">Retake Module</a>
+            {% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>You have no completed modules.</p>
 {% endif %}
 
 <p>
@@ -27,3 +62,4 @@
 </p>
 
 {% endblock %}
+
