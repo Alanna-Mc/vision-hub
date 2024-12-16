@@ -18,6 +18,4 @@ login.init_app(app)
 
 from app import routes, models
 from app.admin import routes
-
-app.static_folder = 'static'
-print(f"Static Folder Path: {app.static_folder}")
+print("Static folder is:", app.static_folder)
