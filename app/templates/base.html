@@ -1,13 +1,28 @@
 <!doctype html>
 <html>
     <head>
-      {% if title %}
-      <title>{{ title }} - Vision Hub</title>
-      {% else %}
-      <title>Welcome to Vision Hub</title>
-      {% endif %}
-    </head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Vision Hub</title> 
+            <meta charset="UTF-8">
+            <title>Vision Hub</title>
+           
+            <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+
+        </head>
     <body>
+        
+        <!-- Sidebar -->
+         <div class="sidebar">
+            <img src="https://via.placeholder.com/80" alt="Profile">
+            <h5>{{ current_user.first_name }}</h5>
+            <!-- <nav class="nav flex-column">
+                <a class="nav-link text-white" href="#">Onboarding</a>
+                <a class="nav-link text-white" href="#">Training</a>
+                <a class="nav-link text-white" href="#">Knowledge Base</a>
+            </nav> --> 
+        </div>
+        
         <div>Vision Hub:
             {% if current_user.is_anonymous %}
             <a href="{{ url_for('login') }}">Login</a>
@@ -26,5 +41,8 @@
         {% endif %}
         {% endwith %}
         {% block content %}{% endblock %}
+
+       
+
     </body>
 </html>
