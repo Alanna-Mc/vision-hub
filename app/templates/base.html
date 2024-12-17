@@ -18,8 +18,23 @@
                 <img src="{{ url_for('static', filename='images/profilePhoto/profileDefault.png') }}" class="profilePicture">
                 <h5>{{ current_user.first_name }} {{ current_user.surname }}</h5>
             </div>
-            <nav class="nav flex-column">
-                <a class="nav-link text-white" href="#">Onboarding</a>
+            <nav class="nav flex-column sideNavLink-container">
+                {% if current_user.role.role_name == 'admin' %}
+                    <a class="nav-link text-white" href="#">Onboarding</a>
+                    <a class="nav-link text-white" href="{{ url_for('manage_training_modules') }}">Training</a>
+                    <a class="nav-link text-white" href="#">Knowledge Base</a>
+                    <a class="nav-link text-white" href="{{ url_for('manage_users') }}">User Managment</a>
+                    <a class="nav-link text-white" href="#">Onboarding</a>
+                    <a class="nav-link text-white" href="#">Reports</a>
+                    <a class="nav-link text-white" href="#">Content Management</a>
+                    {% elif current_user.role.role_name == 'manager' %}
+                    <a class="nav-link text-white" href="#">Onboarding</a>
+                    <a class="nav-link text-white" href="#">Training</a>
+                    <a class="nav-link text-white" href="#">Reports</a>
+                    {% elif current_user.role.role_name == 'staff' %}
+                    <a class="nav-link text-white" href="#">Onboarding</a>
+                    <a class="nav-link text-white" href="{{ url_for('training_dashboard') }}">Training</a>
+                {% endif %}
             </nav>
             <img src="{{ url_for('static', filename='images/loginLogo(2).svg') }}" class="sidebarLogo">
         </div>
@@ -34,12 +49,18 @@
             </div>
         </div>
 
-        <!-- Content Area -->
-        <div class="content">
+        <!-- Logo & name -->
+        <div class="logo-name-container">
+            <h2 class="visionhub-font">VisionHub</h2>
+            <h3 class="welcome-text">Welcome, {{ current_user.first_name }}</h3>
         </div>
 
-        {% block content %}
-        {% endblock %}
+        <!-- Content Area -->
+        <div class="content">
+            {% block content %}
+            {% endblock %}
+        </div>
+
         <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
     </body>
 </html>

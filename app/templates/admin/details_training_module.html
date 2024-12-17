@@ -2,18 +2,27 @@
 
 {% block content %}
 <h2>{{ module.module_title }}</h2>
+<br>
 <p><strong>Description:</strong> {{ module.module_description }}</p>
 <p><strong>Instructions:</strong> {{ module.module_instructions }}</p>
-<p><strong>Video:</strong> 
+<p>
     {% if module.video_url %}
-    <a href="{{ module.video_url }}" target="_blank">Watch Video</a>
-    {% else %}
-    No Video Available
-    {% endif %}
+    <div class="video-container">
+        <iframe
+            src="{{ module.video_url }}"
+            allowfullscreen>
+    </iframe>
+    </div>
+{% else %}
+    <p>No Available Video</p>
+{% endif %}
+<a href="{{ module.video_url }}" target="_blank">Video Link</a>
 </p>
 
-<h3>Questions</h3>
-{% if questions %}
+<div>
+    <h3>Questions</h3>
+    <br>
+    {% if questions %}
     <ol>
         {% for question in questions %}
         <li>
@@ -27,6 +36,7 @@
                     {% endif %}
                 </li>
                 {% endfor %}
+                <br>
             </ul>
         </li>
         {% endfor %}
@@ -34,6 +44,7 @@
 {% else %}
     <p>No questions available for this module.</p>
 {% endif %}
+</div>
 
-<a href="{{ url_for('manage_training_modules') }}" class="btn btn-secondary">Back to Modules</a>
+<a href="{{ url_for('manage_training_modules') }}" class="btn btn-primary">Back to Modules</a>
 {% endblock %}

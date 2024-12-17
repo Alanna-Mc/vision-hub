@@ -1,60 +1,70 @@
-
 {% extends "base.html" %}
 {% block content %}
-<h2>Create Training Module</h2>
+
+<h2 class="mb-4">Create Training Module</h2>
 <form method="POST" action="">
     {{ form.hidden_tag() }}
     
-    <div>
-        {{ form.module_title.label }}
-        {{ form.module_title(class="form-control") }}
-        {% for error in form.module_title.errors %}
-            <p class="text-danger">{{ error }}</p>
-        {% endfor %}
+    <!-- Module Details -->
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h4 class="mb-0">Module Details</h4>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                {{ form.module_title.label(class="form-label") }}
+                {{ form.module_title(class="form-control") }}
+                {% for error in form.module_title.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                {{ form.module_description.label(class="form-label") }}
+                {{ form.module_description(class="form-control", rows=3) }}
+                {% for error in form.module_description.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                {{ form.module_instructions.label(class="form-label") }}
+                {{ form.module_instructions(class="form-control", rows=3) }}
+                {% for error in form.module_instructions.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                {{ form.video_url.label(class="form-label") }}
+                {{ form.video_url(class="form-control") }}
+                {% for error in form.video_url.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                {{ form.pathways.label(class="form-label") }}
+                {{ form.pathways(class="form-select") }}
+                {% for error in form.pathways.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 
-    <div>
-        {{ form.module_description.label }}
-        {{ form.module_description(class="form-control", rows=3) }}
-        {% for error in form.module_description.errors %}
-            <p class="text-danger">{{ error }}</p>
-        {% endfor %}
-    </div>
-
-    <div>
-        {{ form.module_instructions.label }}
-        {{ form.module_instructions(class="form-control", rows=3) }}
-        {% for error in form.module_instructions.errors %}
-            <p class="text-danger">{{ error }}</p>
-        {% endfor %}
-    </div>
-
-    <div>
-        {{ form.video_url.label }}
-        {{ form.video_url(class="form-control") }}
-        {% for error in form.video_url.errors %}
-            <p class="text-danger">{{ error }}</p>
-        {% endfor %}
-    </div>
-
-    <div>
-        {{ form.pathways.label }}
-        {{ form.pathways(class="form-control") }}
-        {% for error in form.pathways.errors %}
-            <p class="text-danger">{{ error }}</p>
-        {% endfor %}
-    </div>
-
-    <h3>Questions</h3>
-    <div id="questions">
-        {% for question_form in form.questions %}
-        <div class="question-block mb-4 border p-3">
-            <h4>Question {{ loop.index }}</h4>
-            {{ question_form.question_text.label }}
-            {{ question_form.question_text(class="form-control") }}
-            {% for error in question_form.question_text.errors %}
-                <p class="text-danger">{{ error }}</p>
-            {% endfor %}
+    <!-- Questions Section -->
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h4 class="mb-0">Questions</h4>
+        </div>
+        <div class="card-body" id="questions">
+            {% for question_form in form.questions %}
+            <div class="question-block border rounded p-3 mb-4">
+                <h5 class="mb-3">Question {{ loop.index }}</h5>
+                <div class="mb-3">
+                    {{ question_form.question_text.label(class="form-label") }}
+                    {{ question_form.question_text(class="form-control") }}
+                    {% for error in question_form.question_text.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
             
             <h5>Options</h5>
             <div class="form-group">
@@ -89,7 +99,7 @@
 
     <div class="my-3">
         {{ form.submit(class="btn btn-primary") }}
-        <button type="submit" name="add_question" value="1" class="btn btn-secondary">Add Another Question</button>
+        <button type="submit" name="add_question" value="1" class="btn btn-primary">Add Another Question</button>
     </div>
 
     <div>

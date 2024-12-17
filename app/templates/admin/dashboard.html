@@ -1,29 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-<!-- Links to feature -->
- <p>
-    <h1>Admin Dashboard</h1>
-    <h2> Welcome, {{ current_user.first_name }}!</h2>
-</p>
- <h2>Quick Links</h2>
-<p>
-    <a href="{{ url_for('manage_users') }}" class="admin-dash-btn">User Management</a>
-    <br>
-    <a href="{{ url_for('manage_users') }}" class="admin-dash-btn">Content Management</a>
-    <br>
-    <a href="{{ url_for('manage_users') }}" class="admin-dash-btn">Add New Policy</a>
-    <br>
-    <a href="{{ url_for('create_training_module') }}" class="admin-dash-btn">Add New Training Module</a>
-    <br>
-    <a href="{{ url_for('manage_training_modules') }}" class="admin-dash-btn">View Training Modules</a>
-    <br>
-    <a href="{{ url_for('register_user') }}" class="admin-dash-btn">Add New User</a>
-    <br>
-    <a href="{{ url_for('manage_users') }}" class="admin-dash-btn">View Onboarding Paths</a>
-    <br>
-    <a href="{{ url_for('manage_users') }}" class="admin-dash-btn">Add New Guide</a>
-</p>
-
+<div class="container">
+    <!-- Heading -->
+    <div class="admin-header">
+        <h3 class="mb-3">Admin Quick Links</h3>
+        <hr class="border border-secondary">
+    </div>
+    <!-- Links to Features -->
+    <div class="admin-quick-links">
+        <a href="{{ url_for('register_user') }}" class="quick-link-btn">Add New User</a>
+        <a href="{{ url_for('manage_users') }}" class="quick-link-btn">User Management</a>
+        <a href="{{ url_for('create_training_module') }}" class="quick-link-btn">Add New Training Module</a>
+        <a href="{{ url_for('manage_training_modules') }}" class="quick-link-btn">View Training Modules</a>
+        <a href="#" class="quick-link-btn">View Onboarding Pathways</a>
+        <a href="{{ url_for('manage_users') }}" class="quick-link-btn">Content Management</a>
+    </div>
+</div>
 {% endblock %}

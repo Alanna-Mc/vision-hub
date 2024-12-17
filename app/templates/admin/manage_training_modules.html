@@ -1,25 +1,28 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Training Modules</h2>
 
-{% if modules %}
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Title</th>
-            <th>Actions</th>
-        </tr>
+<div class="page-container">
+    <div class="header">
+        <h3 class="mb-3">Training Modules</h3>
+        <hr class="border border-secondary">
+    </div>
+
+    <!-- Table for Training Modules -->
+    {% if modules %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th></th>
+            </tr>
     </thead>
     <tbody>
         {% for module in modules %}
         <tr>
-            <td>{{ loop.index }}</td>
             <td>{{ module.module_title }}</td>
-            </td>
             <td>
-                <a href="{{ url_for('details_training_module', module_id=module.id) }}" class="btn btn-sm btn-info">
+                <a href="{{ url_for('details_training_module', module_id=module.id) }}" class="btn btn-sm btn-outline-success">
                     View Details</a>
             </td>
         </tr>
