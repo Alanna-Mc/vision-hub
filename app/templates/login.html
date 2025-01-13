@@ -15,7 +15,8 @@
         <!-- Wave SVG -->
         <div class="wave"></div>
         <div class="login-details-top">
-            <h1>Log into Vision Hub</h1>
+            <img src="{{ url_for('static', filename='images/logoImageOnGreenSquare.svg') }}" class="loginLogoHeader">
+            <h1 class="loginTextHeader">Log into Vision Hub</h1>
             <div class="login-enter-details">
                 <br>
                 <form action="" method="post" novalidate>
@@ -41,8 +42,8 @@
                     </p>
                 </form>
             </div>
-            <div class="login-enter-bottom">
-                <p>Login with google</p>
+            <div class="login-details-footer">
+                <p class="loginGoogle">Login with google</p>
             </div>
         </div>
         <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>

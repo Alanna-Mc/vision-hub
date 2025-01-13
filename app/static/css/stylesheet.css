@@ -160,8 +160,21 @@ body.login-page {
     z-index: 1;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
     border-radius: 5px;
- 
-    
+}
+
+.loginLogoHeader {
+    max-width: 100%; 
+    width: auto;
+    height: 110px; 
+    margin: auto; 
+    border-radius: 40%;
+    padding: 15px;
+}
+
+.loginTextHeader {
+    text-align: center; 
+    margin-bottom: 20px; 
+    font-weight:lighter; /* Make the text bold */
 }
 
 .login-enter-details {
@@ -177,8 +190,6 @@ body.login-page {
 
 }
 
-
-
 .wave {
     background-image: url('../images/loginBackground.svg');
     background-repeat: no-repeat; 
@@ -187,4 +198,8 @@ body.login-page {
     width: 100%; 
     position: absolute; 
     z-index: 0; 
+}
+
+.loginGoogle {
+    padding: 50px;
 }
