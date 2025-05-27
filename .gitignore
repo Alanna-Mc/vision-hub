@@ -8,6 +8,7 @@ venv/
 
 # SQLite database files
 *.db
+db_backup/
 
 # Environment and configuration files
 .env
