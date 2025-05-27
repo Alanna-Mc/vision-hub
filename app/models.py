@@ -100,7 +100,7 @@ class Role(db.Model):
     
     Attributes:
         id (int): The unique identifier for the role (primary key).
-        role_name (str): The name of the role (e.g., Admin, Manager, Staff).
+        role_name (str): The name of the role (e.g., admin, manager, staff).
         users (list[User]): List of users assigned to this role (relationship).
     """
     __tablename__ = 'role'

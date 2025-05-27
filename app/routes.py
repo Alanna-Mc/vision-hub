@@ -8,8 +8,6 @@ import sqlalchemy as sa
 from datetime import datetime, timezone
 
 
-
-@app.route('/')
 @app.route('/login', methods=['GET', 'POST'])
 def login():        
     if current_user.is_authenticated:
@@ -53,6 +51,11 @@ def login():
             return redirect(url_for('logout'))
 
     return render_template('login.html', title='Sign In', form=form)
+
+
+@app.route('/')
+def index():
+    return redirect(url_for('login'))
 
 
 @app.route('/logout')
