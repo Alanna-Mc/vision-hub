@@ -6,10 +6,6 @@ __pycache__/
 # Virtual environment directory
 venv/
 
-# SQLite database files
-*.db
-db_backup/
-
 # Environment and configuration files
 .env
 *.env
