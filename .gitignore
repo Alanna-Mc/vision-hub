@@ -35,6 +35,5 @@ Session.vim
 
 # Temporary files
 *.tmp
-*.bak
 *.orig
 
