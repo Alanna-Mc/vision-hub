@@ -48,7 +48,8 @@ class User(UserMixin, db.Model):
     is_onboarding: so.Mapped[bool] = so.mapped_column(default=False) # Default: Not onboarding
     dateStarted: so.Mapped[datetime] = so.mapped_column(index=True, default=lambda: datetime.now(timezone.utc))
     google_email: so.Mapped[Optional[str]] = so.mapped_column(sa.String(120), unique=True, nullable=True)
-    
+    profile_photo: so.Mapped[Optional[str]] = so.mapped_column(sa.String(120), nullable=True, default='profileDefault.png')
+
     # Self-referential relationship for manager and those managed
     manager_id: so.Mapped[Optional[int]] = so.mapped_column(sa.ForeignKey('user.id'), nullable=True)
     manager: so.Mapped[Optional['User']] = so.relationship('User', remote_side=[id], back_populates='manages')
