@@ -9,7 +9,3 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember Me')
     submit = SubmitField('Login')
-
-class UpdateProfilePhotoForm(FlaskForm):
-    photo = FileField('Update Profile Photo', validators=[FileAllowed(['jpg', 'png', 'jpeg'])])
-    submit = SubmitField('Upload')

@@ -1,14 +1,15 @@
 import sqlalchemy as sa
-import os
-import secrets
-from flask import render_template, flash, redirect, url_for, request
+import os, secrets
+from flask import render_template, flash, redirect, url_for, request, current_app
 from app.forms import LoginForm
 from app import app, db
 from app.models import User, TrainingModule, UserModuleProgress, Option, UserQuestionAnswer
 from flask_login import current_user, login_user, logout_user, login_required
 from urllib.parse import urlsplit
 from datetime import datetime, timezone
-from werkzeug.utils import UpdateProfilePhotoForm
+from werkzeug.utils import secure_filename
+from config import Config
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():        
@@ -253,47 +254,32 @@ def take_training_module(module_id):
                            title=module.module_title, 
                            user_answers=user_answers)
 
-@app.route('/update_profile_photo', methods=['GET', 'POST'])
+
+@app.route('/update_profile_photo', methods=['POST'])
 @login_required
 def update_profile_photo():
-    form = UpdateProfilePhotoForm()
-    if form.validate_on_submit():
-        if form.photo.data:
-            while True:
-                # Generate a secure filename and save the photo
-                random_hex = secrets.token_hex(8)
-                _, file_extension = os.path.splitext(secure_filename(form.photo.data.filename))
-                photo_filename = random_hex + file_extension
-                
-                existing_user = User.query.filter_by(profile_photo=photo_filename).first()
-                photo_path = os.path.join(app.root_path, 'static/images/profilePhoto', photo_filename)
+    photo = request.files.get('photo')
+    if not photo or photo.filename == '':
+        return redirect(request.form.get('next'))
 
-                if not existing_user and not os.path.exists(photo_path):
-                    break 
-    
-                # Overwrite users previously uploaded photo
-                if current_user.profile_photo != 'profile_default.png':
-                    old_photo_path = os.path.join(app.root_path, 'static/images/profilePhoto', current_user.profile_photo)
-                    if os.path.exists(old_photo_path):
-                        os.remove(old_photo_path)
+    if not current_app.config['ALLOWED_EXTENSIONS'] or \
+       not Config.allowed_file(photo.filename):
+        return redirect(request.form.get('next'))
 
-                # Save new photo
-                form.photo.data.save(photo_path)
+    rand = secrets.token_hex(8)
+    _, ext = os.path.splitext(secure_filename(photo.filename))
+    filename = rand + ext.lower()
 
-                # Update user in database
-                current_user.profile_photo = photo_filename
-                db.session.commit()
-                flash('Your profile photo has been updated!', 'success')
-                if current_user.role.role_name == 'admin':
-                    return redirect(url_for('admin_dashboard'))
-                elif current_user.role.role_name == 'manager':
-                    return redirect(url_for('manager_dashboard'))
-                elif current_user.role.role_name == 'staff':
-                    return redirect(url_for('staff_dashboard'))
+    old = current_user.profile_photo or ''
+    if old != 'profileDefault.png':
+        old_path = os.path.join(current_app.config['PROFILE_PHOTO_FOLDER'], old)
+        if os.path.exists(old_path):
+            os.remove(old_path)
 
-        return render_template('update_profile_photo.html', form=form)
+    save_path = os.path.join(current_app.config['PROFILE_PHOTO_FOLDER'], filename)
+    photo.save(save_path)
 
+    current_user.profile_photo = filename
+    db.session.commit()
 
-  
-
-
+    return redirect(request.form.get('next'))
