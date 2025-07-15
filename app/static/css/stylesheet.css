@@ -82,7 +82,7 @@ body {
     font-family: 'Playfair Display', serif;
     font-size: 2rem;
     font-weight: bold; 
-    color: #00854a; 
+    color: #000000; 
     margin: 0; 
     margin-right: 20px; 
 }
@@ -143,8 +143,73 @@ body {
     height: 10px;
     border-radius: 5px;
 }
+/* ------------------------------------- Table Styling ------------------------------------- */
 
-/* Login Page Styling*/
+/* Makes the table container scrollable */
+.table-wrapper {
+  max-height: 400px;
+  overflow-y: auto;
+  margin-bottom: 1.5rem;
+}
+
+/* full-width table with separated borders */
+.user-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* sticky header row */
+.user-table thead th {
+  position: sticky;
+  top: 0;
+  border-bottom: 2px solid #ddd;
+  z-index: 2;
+}
+
+/* cell padding & alignment */
+.user-table th,
+.user-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid #eee;
+}
+
+/* narrow “Actions” column so buttons don’t stretch everything */
+.user-table th:last-child,
+.user-table td:last-child {
+  white-space: nowrap;
+  width: 1%;
+}
+
+/* ------------------------------------- Button Styling ------------------------------------- */
+
+.royal-blue-button {
+    background-color: #5271FF;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 10%;
+    text-decoration: none;
+    margin: auto;
+}
+
+.dark-blue-button {
+    background-color: #004AAD;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 10%;
+    text-decoration: none;
+    margin: auto;
+}
+
+.button-container-outside-table {
+    display: inline-block;
+    margin-top: 20px;
+    margin-bottom: 10px; 
+}
+
+/* ----------------------------------- Login Page Styling ------------------------------------- */
 body.login-page {
     background-color: #ffff;
     display: flex;
