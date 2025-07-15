@@ -1,3 +1,5 @@
+/* ------------------------------------- Base Styling ------------------------------------- */
+
 body {
     color: #000000;
     background-color: #d1eadd ;
@@ -70,33 +72,45 @@ body {
 }
 
 .logo-name-container {
-    display: flex; 
-    align-items: center;
-    justify-content: flex-start; 
-    margin-left: 240px; 
-    margin-top: 20px; 
-    padding: 10px 20px; 
+    display: flex;   
+    align-items: baseline;      
+    margin-left: 240px;          
+    margin-top: 20px;
+    margin-bottom: 5px;
+    gap: 2rem; 
+    color: #333; 
 }
 
-.visionhub-font {
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem;
-    font-weight: bold; 
-    color: #000000; 
-    margin: 0; 
-    margin-right: 20px; 
+.logo-vision {
+  font-family: 'Playfair Display', serif;
+  font-weight: 450;
+  font-style: italic;
+  font-size: 2.5rem;
+}
+
+.logo-hub {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 200;
+  font-size: 2.5rem;
+  margin-left: 0;
 }
 
 .welcome-text {
     font-family: 'Roboto', sans-serif; 
-    font-size: 1.5rem; 
-    color: #333; 
+    font-size: 1.2rem; 
     margin: 0;
 }
 
-.btn-view-details {
-    color: #333;
+/* ----------------------------------- Content Area Styling ----------------------------------- */
+
+.page-title {
+    font-family: 'Montserrat', sans-serif;  
+    font-size: 2rem;                       
+    font-weight: 200;                       
+    color: #242827;                      
 }
+
+/* ------------------------------------- Training Styling ------------------------------------- */
 
 .video-container {
     position: relative;
@@ -114,7 +128,7 @@ body {
     border: 0; 
 }
 
-/* Admin Styling*/
+/* ------------------------------------- Admin Styling ------------------------------------- */
 
 .admin-quick-links {
     display: grid;
@@ -207,6 +221,10 @@ body {
     display: inline-block;
     margin-top: 20px;
     margin-bottom: 10px; 
+}
+
+.btn-view-details {
+    color: #333;
 }
 
 /* ----------------------------------- Login Page Styling ------------------------------------- */

@@ -23,7 +23,6 @@
                 <!-- remember current URL -->
                 <input type="hidden" name="next" value="{{ request.path }}">
 
-                <!-- hidden file input -->
                 <input type="file"
                         id="fileInput"
                         name="photo"
@@ -75,7 +74,10 @@
 
         <!-- Logo & name -->
         <div class="logo-name-container">
-            <h2 class="visionhub-font">VisionHub</h2>
+            <h2 class="logo-text">
+                <span class="logo-vision">Vision</span>
+                <span class="logo-hub">Hub</span>
+            </h2>
             <h3 class="welcome-text">Welcome, {{ current_user.first_name }}</h3>
         </div>
 
