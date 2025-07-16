@@ -5,72 +5,6 @@ body {
     background-color: #d1eadd ;
 }
 
-.sidebar {
-    background-color: #00854a; 
-    color: white;
-    height: 100vh; 
-    position: fixed;
-    width: 200px; 
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    text-align: center; 
-}
-
-.top-bar {
-    background-color: white;
-    height: 60px;
-    padding: 10px 20px;
-    margin-left: 200px; 
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-}
-
-.content {
-    background-color: white;
-    border-radius: 8px;
-    margin-left: 240px; 
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
-    max-width: calc(100% - 240px - 40px);
-}
-
-.sidebarLogo {
-    max-width: 100%;
-    width: 120px; 
-    height: auto; 
-    display: block; 
-    margin: 0 auto; 
-    margin-top: auto; 
-}
-
-.profilePicture {
-    display: block;
-    margin: 30px auto 10px auto;
-    border-radius: 50%; 
-    width: 80px; 
-    height: 80px; 
-    object-fit: cover; 
-}
-
-.logout-image {
-    width: 30px; 
-    height: 30px; 
-    object-fit: cover; 
-    margin-left: 10px;
-}
-
-#clock {
-    color: #1a1d1c;
-    margin-right: 20px; 
-}
-
-.sideNavLink-container {
-    margin-top: 20px; 
-}
-
 .logo-name-container {
     display: flex;   
     align-items: baseline;      
@@ -101,7 +35,87 @@ body {
     margin: 0;
 }
 
+/* ----------------------------------- Side Bar Styling ----------------------------------- */
+
+.sidebar {
+    background-color: #00854a; 
+    color: white;
+    height: 100vh; 
+    position: fixed;
+    width: 200px; 
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center; 
+}
+
+.sidebarLogo {
+    max-width: 100%;
+    width: 120px; 
+    height: auto; 
+    display: block; 
+    margin: 0 auto; 
+    margin-top: auto; 
+}
+
+.profilePicture {
+    display: block;
+    margin: 30px auto 10px auto;
+    border-radius: 50%; 
+    width: 80px; 
+    height: 80px; 
+    object-fit: cover; 
+}
+
+.sideNavLink-container {
+    margin-top: 20px;
+}
+
+.nav-link {
+    border-radius: 0.5rem;  
+    color: white;
+}
+
+.nav-link:hover{
+  background-color: rgba(255,255,255,0.3);
+  color: #09624c;   
+}
+
+/* ------------------------------------ Top Bar Styling ------------------------------------ */
+
+.top-bar {
+    background-color: white;
+    height: 60px;
+    padding: 10px 20px;
+    margin-left: 200px; 
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.logout-image {
+    width: 30px; 
+    height: 30px; 
+    object-fit: cover; 
+    margin-left: 10px;
+}
+
+#clock {
+    color: #1a1d1c;
+    margin-right: 20px; 
+}
+
 /* ----------------------------------- Content Area Styling ----------------------------------- */
+
+.content {
+    background-color: white;
+    border-radius: 8px;
+    margin-left: 240px; 
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    max-width: calc(100% - 240px - 40px);
+}
 
 .page-title {
     font-family: 'Montserrat', sans-serif;  
@@ -166,7 +180,6 @@ body {
   margin-bottom: 1.5rem;
 }
 
-/* full-width table with separated borders */
 .user-table {
   width: 100%;
   border-collapse: separate;

@@ -20,12 +20,12 @@
             <tbody>
                 {% for user in users %}
                 <tr>
-                    <td>{{ user.first_name }}</td>
-                    <td>{{ user.surname }}</td>
+                    <td>{{ user.first_name|title }}</td>
+                    <td>{{ user.surname|title }}</td>
                     <td>{{ user.username }}</td>
-                    <td>{{ user.job_title }}</td>
-                    <td>{{ user.department.department_name }}</td>
-                    <td>{{ user.role.role_name }}</td>
+                    <td>{{ user.job_title|title }}</td>
+                    <td>{{ user.department.department_name|title }}</td>
+                    <td>{{ user.role.role_name|title }}</td>
                     <td>{{ 'Yes' if user.is_onboarding else 'No' }}</td>
                     <td>
                         <a class = "royal-blue-button" href="{{ url_for('view_user', user_id=user.id) }}">View</a>
