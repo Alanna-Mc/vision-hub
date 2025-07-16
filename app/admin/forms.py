@@ -46,7 +46,7 @@ class EditUserForm(FlaskForm):
     department = SelectField('Department', coerce=int, validators=[DataRequired()])
     job_title = StringField('Position', validators=[DataRequired()])
     dateStarted = DateField('Start Date', format='%d-%m-%y', validators=[Optional()])
-    submit = SubmitField('Edit Details')             
+    submit = SubmitField('Confirm')             
 
 
 class OptionForm(FlaskForm):

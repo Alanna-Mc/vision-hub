@@ -142,6 +142,24 @@ def edit_user(user_id):
     return render_template('admin/editUser.html', title='Edit User', form=form, user=user)
 
 
+@app.route('/admin/delete_user/<int:user_id>', methods=['POST'])
+@login_required
+def delete_user(user_id):
+    if current_user.role.role_name != 'admin':
+        return redirect(url_for('logout'))
+        
+    user = User.query.get_or_404(user_id)
+
+    if user.id == current_user.id:
+        flash("You cannot delete your own account.", "warning")
+        return redirect(url_for('manage_users'))
+
+    db.session.delete(user)
+    db.session.commit()
+    flash(f"User {user.first_name} {user.surname} has been deleted.", "success")
+    return redirect(url_for('manage_users'))
+
+
 @app.route('/admin/create_training_module', methods=['GET', 'POST'])
 @login_required
 def create_training_module():

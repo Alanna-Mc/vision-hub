@@ -256,10 +256,21 @@ body {
     display: inline-block;
     margin-bottom: 10px; 
     margin-top: 0px;
+
 }
 
 .btn-view-details {
     color: #333;
+}
+
+
+.warning-button {
+    background-color: #a91b2b;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 10%;
+    text-decoration: none;
+    margin-left: 30px;
 }
 
 /* ----------------------------------- Login Page Styling ------------------------------------- */
@@ -306,7 +317,6 @@ body.login-page {
 .login-details-bottom {
     background-color: #ffffff;
     z-index: 1;
-
 }
 
 .wave {
