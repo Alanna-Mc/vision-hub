@@ -81,7 +81,7 @@ def view_user(user_id):
     if current_user.role.role_name != "admin":
         return redirect(url_for('logout'))
 
-        user = User.query.get_or_404(user_id)
+    user = User.query.get_or_404(user_id)
 
     return render_template('admin/viewUser.html', title='View User', user=user)
 
@@ -137,7 +137,7 @@ def edit_user(user_id):
         # Save changes to the database
         db.session.commit()
 
-        flash(f'User {user.first_name} {user.surname} user details have been updated')
+        #flash(f'User {user.first_name} {user.surname} user details have been updated')
         return redirect(url_for('manage_users'))
     
     return render_template('admin/editUser.html', title='Edit User', form=form, user=user)

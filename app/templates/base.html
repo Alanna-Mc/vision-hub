@@ -39,7 +39,7 @@
                     style="cursor:pointer; width:100px; height:100px;
                             object-fit:cover; border-radius:50%;">
                 </form>
-                <h5>{{ current_user.first_name }} {{ current_user.surname }}</h5>
+                <h5 class="profile-photo-text">{{ current_user.first_name|title }} {{ current_user.surname|title }}</h5>
             </div>
             <nav class="nav flex-column sideNavLink-container">
                 {% if current_user.role.role_name == 'admin' %}
@@ -78,7 +78,7 @@
                 <span class="logo-vision">Vision</span>
                 <span class="logo-hub">Hub</span>
             </h2>
-            <h3 class="welcome-text">Welcome, {{ current_user.first_name }}</h3>
+            <h3 class="welcome-text">Welcome, {{ current_user.first_name|title }}</h3>
         </div>
 
         <!-- Content Area -->

@@ -4,13 +4,27 @@
 <html>
     <body>
         <h1 class="page-title">View User</h1>
-        <div class="form-container">
- 
-
-                <!-- Buttons -->
-                <div class="button-container-form">
-                    <a class="dark-blue-button" href="{{ url_for('edit_user', user_id=user.id) }}">Edit</a>
-                    <a class="dark-blue-button" href="{{ url_for('manage_users') }}">Back</a>
-                </div>
-            </form>
+        <div>
+            <table class="user-table" style="max-width:600px; margin-bottom:1.5rem;">
+                <tr><th>First Name</th>   <td>{{ user.first_name|title }}</td></tr>
+                <tr><th>Surname</th>      <td>{{ user.surname|title }}</td></tr>
+                <tr><th>Username (Email)</th> <td>{{ user.username }}</td></tr>
+                <tr><th>Job Title</th>    <td>{{ user.job_title|title }}</td></tr>
+                <tr><th>Department</th>   <td>{{ user.department.department_name|title }}</td></tr>
+                <tr><th>Role</th>         <td>{{ user.role.role_name|title }}</td></tr>
+                <tr><th>Onboarding?</th>  <td>{{ 'Yes' if user.is_onboarding else 'No' }}</td></tr>
+                {% if user.manager %}
+                <tr><th>Manager</th>      <td>{{ user.manager.first_name|title }} {{ user.manager.surname|title }}</td></tr>
+                {% endif %}
+                <tr><th>Date Started</th> <td>{{ user.dateStarted.strftime('%d-%m-%y') }}</td></tr>
+            </table>
+                
+            <!-- Buttons -->
+            <div class="button-container-form">
+                <a class="dark-blue-button" href="{{ url_for('edit_user', user_id=user.id) }}">Edit</a>
+                <a class="dark-blue-button" href="{{ url_for('manage_users') }}">Back</a>
+            </div>
         </div>
+    </body>
+</html>
+{% endblock %}
