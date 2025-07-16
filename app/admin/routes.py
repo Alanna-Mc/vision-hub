@@ -99,7 +99,14 @@ def edit_user(user_id):
     # Set dropdown values for select fields
     role_choices       = [(role.id, role.role_name) for role in Role.query.all()]
     department_choices = [(dept.id, dept.department_name) for dept in Department.query.all()]
-    manager_choices    = [(0, 'None')] + [(manager.id, f"{manager.first_name} {manager.surname}") for manager in User.query.all()]
+    manager_role       = Role.query.filter_by(role_name='manager').first()
+    manager_choices    = [(0, 'None')]
+    if manager_role:
+        managers = User.query.filter_by(role_id=manager_role.id).all()
+        manager_choices += [
+            (u.id, f"{u.first_name.title()} {u.surname.title()}")
+            for u in managers
+    ]
   
     # Assign dropdown choices to form fields
     form.role.choices       = role_choices
