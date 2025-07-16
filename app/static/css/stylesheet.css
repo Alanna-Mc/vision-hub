@@ -124,6 +124,13 @@ body {
     color: #242827;                      
 }
 
+/* --------------------------------------- Form Styling --------------------------------------- */
+
+.form-container {
+    padding: 20px;
+
+}
+
 /* ------------------------------------- Training Styling ------------------------------------- */
 
 .video-container {
@@ -236,11 +243,18 @@ body {
     margin-bottom: 10px; 
 }
 
+.button-container-form {
+    display: inline-block;
+    margin-bottom: 10px; 
+    margin-top: 0px;
+}
+
 .btn-view-details {
     color: #333;
 }
 
 /* ----------------------------------- Login Page Styling ------------------------------------- */
+
 body.login-page {
     background-color: #ffff;
     display: flex;
@@ -270,7 +284,7 @@ body.login-page {
 .loginTextHeader {
     text-align: center; 
     margin-bottom: 20px; 
-    font-weight:lighter; /* Make the text bold */
+    font-weight:lighter;
 }
 
 .login-enter-details {
