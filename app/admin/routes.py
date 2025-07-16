@@ -93,42 +93,37 @@ def edit_user(user_id):
         return redirect(url_for('logout'))
     
     user = User.query.get_or_404(user_id)
-
     form = EditUserForm(obj=user)
+    form.user_id = user.id
 
     # Set dropdown values for select fields
-    role_choices       = [(role.id, role.role_name) for role in Role.query.all()]
-    department_choices = [(dept.id, dept.department_name) for dept in Department.query.all()]
-    manager_role       = Role.query.filter_by(role_name='manager').first()
-    manager_choices    = [(0, 'None')]
+    form.role.choices       = [(role.id, role.role_name) for role in Role.query.all()]
+    form.department.choices = [(dept.id, dept.department_name) for dept in Department.query.all()]
+    
+    manager_role = Role.query.filter_by(role_name='manager').first()
+    manager_choices = [(0, 'None')]
     if manager_role:
-        managers = User.query.filter_by(role_id=manager_role.id).all()
         manager_choices += [
             (u.id, f"{u.first_name.title()} {u.surname.title()}")
-            for u in managers
-    ]
+            for u in User.query.filter_by(role_id=manager_role.id)
+        ]
+    form.manager.choices = manager_choices
   
-    # Assign dropdown choices to form fields
-    form.role.choices       = role_choices
-    form.department.choices = department_choices
-    form.manager.choices    = manager_choices
+    if request.method == 'GET':
+        form.role.data       = user.role_id
+        form.department.data = user.department_id
+        form.manager.data    = user.manager_id or 0 # Use 0 if manager_id is None
+        form.is_onboarding.data = 'yes' if user.is_onboarding else 'no'
 
-    # Fill the fields with the user's data
-    form.role.data          = user.role_id
-    form.department.data    = user.department_id
-    form.manager.data       = user.manager_id or 0  # Use 0 if manager_id is None
-    form.is_onboarding.data = 'yes' if user.is_onboarding else 'no'
-
-    # Update user details
     if form.validate_on_submit():
-        user.first_name=form.first_name.data,
-        user.surname=form.surname.data,
-        user.username=form.username.data,
-        user.role_id=int(form.role.data),
-        user.is_onboarding=(form.is_onboarding.data == 'yes'),
-        user.manager_id=int(form.manager.data) if form.manager.data else None,
-        user.department_id=int(form.department.data),
-        user.job_title=form.job_title.data
+        user.first_name    = form.first_name.data
+        user.surname       = form.surname.data
+        user.username      = form.username.data
+        user.role_id       = int(form.role.data)
+        user.is_onboarding = (form.is_onboarding.data == 'yes')
+        user.manager_id    = int(form.manager.data) if form.manager.data else None
+        user.department_id = int(form.department.data)
+        user.job_title     = form.job_title.data
 
         # Password reset optional
         if form.password.data:

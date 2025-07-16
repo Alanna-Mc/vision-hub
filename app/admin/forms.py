@@ -12,9 +12,11 @@ def validate_email(self, field):
         raise ValidationError('Invalid email address.')
 
  
-def validate_username(self, username):
-    user = db.session.scalar(sa.select(User).where( User.username == username.data))
-    if user is not None:
+def validate_username(self, field):
+    existing = db.session.scalar(
+        sa.select(User).where(User.username == field.data)
+    )
+    if existing and existing.id != getattr(self, 'user_id', None):
         raise ValidationError('Email address already registered.')
 
 
