@@ -75,6 +75,17 @@ def manage_users():
         return error_message
 
 
+@app.route('/admin/view_user/<int:user_id>', methods=['GET'])
+@login_required
+def view_user(user_id):
+    if current_user.role.role_name != "admin":
+        return redirect(url_for('logout'))
+
+        user = User.query.get_or_404(user_id)
+
+    return render_template('admin/viewUser.html', title='View User', user=user)
+
+
 @app.route('/admin/edit_user/<int:user_id>', methods=['GET', 'POST'])
 @login_required
 def edit_user(user_id):
