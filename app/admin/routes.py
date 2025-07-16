@@ -92,31 +92,28 @@ def edit_user(user_id):
     if current_user.role.role_name != "admin":
         return redirect(url_for('logout'))
     
-    # Retrieve the user to edit
     user = User.query.get_or_404(user_id)
 
-    # Set dropdown values for non-text fields
-    role_choices = [(role.id, role.role_name) for role in Role.query.all()]
-    department_choices = [(dept.id, dept.department_name) for dept in Department.query.all()]
-    manager_choices = [(0, 'None')] + [(manager.id, f"{manager.first_name} {manager.surname}") for manager in User.query.all()]
-
-    # Fill the text fields with the user's data
     form = EditUserForm(obj=user)
+
+    # Set dropdown values for select fields
+    role_choices       = [(role.id, role.role_name) for role in Role.query.all()]
+    department_choices = [(dept.id, dept.department_name) for dept in Department.query.all()]
+    manager_choices    = [(0, 'None')] + [(manager.id, f"{manager.first_name} {manager.surname}") for manager in User.query.all()]
   
     # Assign dropdown choices to form fields
-    form.role.choices = role_choices
+    form.role.choices       = role_choices
     form.department.choices = department_choices
-    form.manager.choices = manager_choices
-    
-    # Set user values to dropdown fields
-    form.role.data = user.role_id
-    form.department.data = user.department_id
-    form.manager.data = user.manager_id or 0  # Use 0 if manager_id is None
+    form.manager.choices    = manager_choices
+
+    # Fill the fields with the user's data
+    form.role.data          = user.role_id
+    form.department.data    = user.department_id
+    form.manager.data       = user.manager_id or 0  # Use 0 if manager_id is None
     form.is_onboarding.data = 'yes' if user.is_onboarding else 'no'
 
-    # Form data
+    # Update user details
     if form.validate_on_submit():
-        # Update user details
         user.first_name=form.first_name.data,
         user.surname=form.surname.data,
         user.username=form.username.data,

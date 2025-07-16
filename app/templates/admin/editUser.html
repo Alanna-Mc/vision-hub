@@ -1,107 +1,116 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Edit User</h1>
-<form method="post">
-    {{ form.hidden_tag() }}
+<h1 class = "page-title">Edit User</h1>
+<div class="form-container">
+    <form method="post" autocomplete="off">
+        {{ form.hidden_tag() }}
 
-    <!-- First Name -->
-    <p>
-        {{ form.first_name.label }}<br>
-        {{ form.first_name(size=32) }}<br>
-        {% for error in form.first_name.errors %}
-        <span style="color: red;">[{{ error }}]</span>
+        <!-- First Name -->
+        <p>
+            {{ form.first_name.label }}<br>
+            {{ form.first_name(size=32) }}<br>
+            {% for error in form.first_name.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <!-- Surname -->
+        <p>
+            {{ form.surname.label }}<br>
+            {{ form.surname(size=32) }}<br>
+            {% for error in form.surname.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <!-- Username -->
+        <p>
+            {{ form.username.label }}<br>
+            {{ form.username(size=32) }}<br>
+            {% for error in form.username.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <!-- Password -->
+        <p>
+            {{ form.password.label }}<br>
+            {{ form.password(size=32, autocomplete="new-password") }}<br>
+            {% for error in form.password.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <!-- Confirm Password -->
+        <p>
+            {{ form.password2.label }}<br>
+            {{ form.password2(size=32, autocomplete="new-password") }}<br>
+            {% for error in form.password2.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <!-- Role -->
+        <p>
+            {{ form.role.label }}<br>
+            {{ form.role() }}<br>
+            {% for error in form.role.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <!-- Department -->
+        <p>
+            {{ form.department.label }}<br>
+            {{ form.department() }}<br>
+            {% for error in form.department.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <!-- Job Title -->
+        <p>
+            {{ form.job_title.label }}<br>
+            {{ form.job_title(size=32) }}<br>
+            {% for error in form.job_title.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <!-- Manager -->
+        <p>
+        {{ form.manager.label }}<br>
+        {{ form.manager() }}<br>
+        {% for err in form.manager.errors %}
+            <span style="color:red">[{{ err }}]</span>
         {% endfor %}
-    </p>
+        </p>
 
-    <!-- Surname -->
-    <p>
-        {{ form.surname.label }}<br>
-        {{ form.surname(size=32) }}<br>
-        {% for error in form.surname.errors %}
-        <span style="color: red;">[{{ error }}]</span>
-        {% endfor %}
-    </p>
+        <!-- Start Date Field -->
+        <p>
+            {{ form.dateStarted.label }}<br>
+            Current: {{ user.dateStarted.strftime('%d-%m-%y') }}<br>
+            {{ form.dateStarted() }}<br>
+            {% for error in form.dateStarted.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
 
-    <!-- Username -->
-    <p>
-        {{ form.username.label }}<br>
-        {{ form.username(size=32) }}<br>
-        {% for error in form.username.errors %}
-        <span style="color: red;">[{{ error }}]</span>
-        {% endfor %}
-    </p>
+        <!-- Is Onboarding -->
+        <p>
+            {{ form.is_onboarding.label }}<br>
+            {{ form.is_onboarding() }}<br>
+            {% for error in form.is_onboarding.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
 
-    <!-- Password -->
-    <p>
-        {{ form.password.label }}<br>
-        {{ form.password(size=32) }}<br>
-        {% for error in form.password.errors %}
-        <span style="color: red;">[{{ error }}]</span>
-        {% endfor %}
-    </p>
-
-    <!-- Confirm Password -->
-    <p>
-        {{ form.password2.label }}<br>
-        {{ form.password2(size=32) }}<br>
-        {% for error in form.password2.errors %}
-        <span style="color: red;">[{{ error }}]</span>
-        {% endfor %}
-    </p>
-
-    <!-- Role -->
-    <p>
-        {{ form.role.label }}<br>
-        {{ form.role() }}<br>
-        {% for error in form.role.errors %}
-        <span style="color: red;">[{{ error }}]</span>
-        {% endfor %}
-    </p>
-
-    <!-- Department -->
-    <p>
-        {{ form.department.label }}<br>
-        {{ form.department() }}<br>
-        {% for error in form.department.errors %}
-        <span style="color: red;">[{{ error }}]</span>
-        {% endfor %}
-    </p>
-
-    <!-- Job Title -->
-    <p>
-        {{ form.job_title.label }}<br>
-        {{ form.job_title(size=32) }}<br>
-        {% for error in form.job_title.errors %}
-        <span style="color: red;">[{{ error }}]</span>
-        {% endfor %}
-    </p>
-
-    <!-- Start Date Field -->
-    <p>
-        {{ form.dateStarted.label }}<br>
-        Current: {{ user.dateStarted.strftime('%d-%m-%y') }}<br>
-        {{ form.dateStarted() }}<br>
-        {% for error in form.dateStarted.errors %}
-        <span style="color: red;">[{{ error }}]</span>
-        {% endfor %}
-    </p>
-
-    <!-- Is Onboarding -->
-    <p>
-        {{ form.is_onboarding.label }}<br>
-        {{ form.is_onboarding() }}<br>
-        {% for error in form.is_onboarding.errors %}
-        <span style="color: red;">[{{ error }}]</span>
-        {% endfor %}
-    </p>
-
-    <!-- Submit Button -->
-    <p>{{ form.submit}}</p>
-</form>
-
-<!-- Back Button -->
-<p>
-    <a href="{{ url_for('manage_users') }}" class="btn">Back to Manage Users</a>
-</p>
+        <!-- Buttons -->
+        <div class="button-container-form">
+            {{ form.submit(class_="dark-blue-button") }}
+            <a href="{{ url_for('manage_users') }}" class="dark-blue-button">Back</a>
+        </div>
+    </form>
+</div>
 {% endblock %}
