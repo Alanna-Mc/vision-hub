@@ -41,7 +41,7 @@
             </div>
             <div class="mb-3">
                 {{ form.pathways.label(class="form-label") }}
-                {{ form.pathways(class="form-select") }}
+                {{ form.pathways(class="form-select", multiple=True) }}
                 {% for error in form.pathways.errors %}
                     <div class="text-danger small">{{ error }}</div>
                 {% endfor %}

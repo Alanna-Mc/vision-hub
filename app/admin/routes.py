@@ -172,14 +172,12 @@ def create_training_module():
 
     # Check if the user wants to add another question
     if request.method == 'POST' and 'add_question' in request.form:
-        # Add another empty question to the FieldList
         form.questions.append_entry()
         # Re-render the form with the new question included
         return render_template('admin/create_training_module.html', title='Create Training Module', form=form)
 
     if form.validate_on_submit():
         try:
-            # Create the training module
             training_module = TrainingModule(
                 module_title=form.module_title.data,
                 module_description=form.module_description.data,
@@ -243,7 +241,6 @@ def create_training_module():
 @app.route('/admin/manage_training_modules', methods=['GET'])
 @login_required
 def manage_training_modules():
-    # Ensure only admins can access this page
     if current_user.role.role_name != "admin":
         return redirect(url_for('logout'))
     
@@ -257,10 +254,10 @@ def manage_training_modules():
         modules=modules
     )
 
+
 @app.route('/admin/details_training_module/<int:module_id>', methods=['GET'])
 @login_required
 def details_training_module(module_id):
-    # Ensure only admins can access this page
     if current_user.role.role_name != "admin":
         return redirect(url_for('logout'))
     
