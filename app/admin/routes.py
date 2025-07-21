@@ -238,10 +238,8 @@ def manage_training_modules():
     if current_user.role.role_name != "admin":
         return redirect(url_for('logout'))
     
-    # Fetch all training modules
-    modules = TrainingModule.query.all()
+    modules = TrainingModule.query.filter_by(active=True).all()
     
-    # Render the template with the modules
     return render_template(
         'admin/manage_training_modules.html',
         title='Manage Training Modules',
@@ -326,3 +324,16 @@ def edit_training_module(module_id):
         print("EDIT MODULE ERRORS:", form.errors)
 
     return render_template('admin/edit_training_module.html', title=f'Edit Module: {module.module_title}', form=form, module=module)
+
+
+@app.route('/admin/delete_training_module/<int:module_id>', methods=['POST'])
+@login_required
+def delete_training_module(module_id):
+    if current_user.role.role_name != 'admin':
+        return redirect(url_for('logout'))
+
+    module = TrainingModule.query.get_or_404(module_id)
+    module.active = False
+    db.session.commit()
+    flash(f'Module "{module.module_title}" has been deleted.', 'success')
+    return redirect(url_for('manage_training_modules'))

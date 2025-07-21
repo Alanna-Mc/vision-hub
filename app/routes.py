@@ -14,7 +14,6 @@ from config import Config
 @app.route('/login', methods=['GET', 'POST'])
 def login():        
     if current_user.is_authenticated:
-        # Redirect authenticated users to their correct dashboards
         if current_user.role.role_name == "admin":
             return redirect(url_for('admin_dashboard'))
         elif current_user.role.role_name == "manager":
@@ -22,10 +21,8 @@ def login():
         elif current_user.role.role_name == "staff":
             return redirect(url_for('staff_dashboard'))
         else:
-            # Handle unauthenticated roles
             return redirect(url_for('logout'))
     
-    # Login form logic
     form = LoginForm()
     if form.validate_on_submit():
         user = db.session.scalar(sa.select(User).where(User.username == form.username.data))
@@ -88,54 +85,42 @@ def manager_dashboard():
 def training_dashboard():
     if current_user.role.role_name != "staff":
         return redirect(url_for('logout'))
-    
-    # Get the onboarding steps and training modules for the user's path
-    onboarding_path = current_user.onboarding_path
-    if onboarding_path:
-        steps = onboarding_path.steps
-    else:
-        steps = []
 
-    # Separate modules by status
+    onboarding_path = current_user.onboarding_path
+    steps = onboarding_path.steps if onboarding_path else []
+    active_modules = [step.training_module for step in steps if step.training_module.active]
+
     completed_modules = []
     to_be_completed_modules = []
     in_progress_modules = []
 
-    # If module failed, use to identify as in progress rather than completed
     passing_threshold = 0.5
 
-    for step in steps:
-        module = step.training_module
-        # Get the latest attempt
-        if module:
-            progress = UserModuleProgress.query.filter_by(
-                user_id=current_user.id,
-                training_module_id=module.id
-            ).order_by(UserModuleProgress.id.desc()).first()
+    for module in active_modules:
+        progress = UserModuleProgress.query.filter_by(
+            user_id=current_user.id,
+            training_module_id=module.id
+        ).order_by(UserModuleProgress.id.desc()).first()
 
-            # Determine status of current module
-            # If no progress, it's "to be completed"
-            if not progress:
-                to_be_completed_modules.append(module)
-            # If there is progress
-            else:
-                total_questions = len(module.questions) or 1  # Avoid division by zero
-                # User finished at least one attempt
-                if progress.completed_date:
-                    # Check if this attempt passed
-                    # Passed
-                    if progress.score is not None and (progress.score / total_questions) >= passing_threshold:
-                        completed_modules.append({
-                            'module': module,        
-                            'score': progress.score, 
-                            'passed': True           
-                        })
-                    # Failed
-                    else:
-                        to_be_completed_modules.append(module)
-                # Incomplete attempt (in progress)
+        # Status of current module
+        if not progress:
+            to_be_completed_modules.append(module)
+        else:
+            total_questions = len(module.questions) or 1  # Avoid division by zero
+            if progress.completed_date:
+                # Passed
+                if progress.score is not None and (progress.score / total_questions) >= passing_threshold:
+                    completed_modules.append({
+                        'module': module,        
+                        'score': progress.score, 
+                        'passed': True           
+                    })
+                # Failed                    
                 else:
-                    in_progress_modules.append(module)
+                    to_be_completed_modules.append(module)
+            # Incomplete attempt (in progress)
+            else:
+                in_progress_modules.append(module)
 
     return render_template(
         'dashboard_training.html', 
