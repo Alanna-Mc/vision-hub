@@ -23,9 +23,9 @@ def register_user():
         # Determine the onboarding path based on the department
         department_id = int(form.department.data)
         if Department.query.filter_by(id=department_id, department_name="office").first():
-            onboarding_path = OnboardingPath.query.filter_by(path_name="office staff").first()
+            onboarding_path = OnboardingPath.query.filter_by(path_name="office").first()
         else:
-            onboarding_path = OnboardingPath.query.filter_by(path_name="operational staff").first()
+            onboarding_path = OnboardingPath.query.filter_by(path_name="operational").first()
        
         # Create a new user instance
         user = User(
@@ -273,3 +273,62 @@ def details_training_module(module_id):
         module=module,
         questions=questions
     )
+
+
+@app.route('/admin/edit_training_module/<int:module_id>', methods=['GET', 'POST'])
+@login_required
+def edit_training_module(module_id):
+    if current_user.role.role_name != "admin":
+        return redirect(url_for('logout'))
+    
+    module = TrainingModule.query.get_or_404(module_id)
+
+    form = CreateTrainingModuleForm(obj=module)
+    form.pathways.choices = [(path.id, path.path_name) for path in OnboardingPath.query.all()]
+
+    if request.method == 'GET':
+        form.questions.entries.clear()
+        for question in module.questions:
+            question_form = form.questions.append_entry()
+            question_form.question_text.data = question.question_text
+            for i, option in enumerate(question.options):
+                sub = getattr(question_form, f'option{i+1}')
+                sub.option_text.data = option.option_text
+                sub.is_correct.data  = option.is_correct
+
+        form.pathways.data = [step.onboarding_path_id for step in module.onboarding_steps]
+
+    if form.validate_on_submit():
+        module.module_title       = form.module_title.data
+        module.module_description = form.module_description.data
+        module.module_instructions= form.module_instructions.data
+        module.video_url          = form.video_url.data or None
+
+        OnboardingStep.query.filter_by(training_module_id=module.id).delete()
+        for path_id in form.pathways.data:
+            path = OnboardingPath.query.get(path_id)
+            db.session.add(OnboardingStep(
+                step_name=module.module_title,
+                path=path,
+                training_module=module
+            ))
+        for i in range(len(module.questions)):
+            question_obj = module.questions[i]
+            question_form = form.questions[i]
+
+            # update the question text
+            question_obj.question_text = question_form.question_text.data
+
+            # and its 4 options
+            for j, option_obj in enumerate(question_obj.options):
+                option = getattr(question_form, f'option{j+1}')
+                option_obj.option_text = option.option_text.data
+                option_obj.is_correct  = option.is_correct.data
+
+        db.session.commit()
+        flash(f'"{module.module_title}" has been updated.')        
+        return redirect(url_for('manage_training_modules'))
+    elif request.method == 'POST':
+        print("EDIT MODULE ERRORS:", form.errors)
+
+    return render_template('admin/edit_training_module.html', title=f'Edit Module: {module.module_title}', form=form, module=module)

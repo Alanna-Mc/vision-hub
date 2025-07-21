@@ -22,9 +22,12 @@
         <tr>
             <td>{{ module.module_title }}</td>
             <td>
-                <a href="{{ url_for('details_training_module', module_id=module.id) }}" class="btn btn-sm btn-outline-success">
-                    View Details</a>
-            </td>
+                <a href="{{ url_for('details_training_module', module_id=module.id) }}" class="royal-blue-button">View</a>
+                <a href="{{ url_for('edit_training_module', module_id=module.id) }}" class="royal-blue-button">Edit</a>
+               {# <form method="POST" action="{{ url_for('delete_training_module', module_id=module.id) }}" style="display:inline;">
+                    <button type="submit" class="warning-button" onclick="return confirm('Delete this module?')">Delete</button>
+                </form> #}
+      </td>
         </tr>
         {% endfor %}
     </tbody>
@@ -36,3 +39,5 @@
 <a href="{{ url_for('create_training_module') }}" class="btn btn-primary">Create New Module</a>
 <a href="{{ url_for('admin_dashboard') }}" class="btn btn-primary">Back</a>
 {% endblock %}
+
+

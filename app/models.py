@@ -179,6 +179,9 @@ class TrainingModule (db.Model):
     # Relationship with user progress
     user_progress: so.Mapped[List['UserModuleProgress']] = so.relationship('UserModuleProgress', back_populates='training_module')
 
+    # Relationship with onboarding steps
+    onboarding_steps: so.Mapped[List['OnboardingStep']] = so.relationship('OnboardingStep', back_populates='training_module', cascade='all, delete-orphan')
+
     def __repr__(self):
         """
         Returns a string representation of the TrainingModule object.
@@ -209,7 +212,7 @@ class Question (db.Model):
     training_module_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('training_module.id'), nullable=False)
     training_module: so.Mapped['TrainingModule'] = so.relationship('TrainingModule', back_populates='questions')
 
-     # Relationship with options
+    # Relationship with options
     options: so.Mapped[List['Option']] = so.relationship('Option', back_populates='question', cascade='all, delete-orphan')
 
     def __repr__(self):
@@ -378,7 +381,8 @@ class OnboardingStep(db.Model):
 
     # Relationship to training modules
     training_module_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('training_module.id'), nullable=True)
-    training_module: so.Mapped['TrainingModule'] = so.relationship('TrainingModule')
+    training_module: so.Mapped['TrainingModule'] = so.relationship('TrainingModule', back_populates='onboarding_steps')
+
     
     def __repr__(self):
         """
