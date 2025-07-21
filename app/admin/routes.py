@@ -167,13 +167,11 @@ def create_training_module():
         return redirect(url_for('logout'))
 
     form = CreateTrainingModuleForm()
-
     form.pathways.choices = [(path.id, path.path_name) for path in OnboardingPath.query.all()]
 
-    # Check if the user wants to add another question
+    # Allows the user to add additional questions before submitting the form
     if request.method == 'POST' and 'add_question' in request.form:
         form.questions.append_entry()
-        # Re-render the form with the new question included
         return render_template('admin/create_training_module.html', title='Create Training Module', form=form)
 
     if form.validate_on_submit():
@@ -183,11 +181,11 @@ def create_training_module():
                 module_description=form.module_description.data,
                 module_instructions=form.module_instructions.data,
                 video_url=form.video_url.data or None
-                )
+            )
             db.session.add(training_module)
             db.session.flush()
 
-            # Assign module to selected pathways
+            # Create onboarding step for the training module and associate it with selected pathways
             for pathway_id in form.pathways.data:
                 pathway = OnboardingPath.query.get(pathway_id)
                 if pathway:
@@ -198,13 +196,12 @@ def create_training_module():
                     )
                     db.session.add(onboarding_step) 
             
-            # Ensure at least one question is provided
             if not form.questions.data or len(form.questions.data) < 1:
                 flash("You must add at least one question for the training module.")
                 db.session.rollback()
                 return redirect(url_for('create_training_module'))
             
-            # Create questions and options
+            # Questions
             for question_form in form.questions:
                 question = Question(
                     question_text=question_form.question_text.data,
@@ -212,7 +209,7 @@ def create_training_module():
                 )
                 db.session.add(question)
                 db.session.flush()
-
+                # Options
                 for option_form in [question_form.option1, question_form.option2, question_form.option3, question_form.option4]:
                     option = Option(
                         option_text=option_form.option_text.data,
@@ -221,18 +218,15 @@ def create_training_module():
                     )
                     db.session.add(option)
 
-            # Save everything to the database
             db.session.commit()  
             flash(f'Training module "{training_module.module_title}" has been successfully created!')
-            return redirect(url_for('admin_dashboard'))
+            return redirect(url_for('manage_training_modules'))
     
         except Exception as e:
             db.session.rollback()
-            flash(f'Error: {str(e)}')
-            return redirect(url_for('create_training_module'))
-    else:
-        print("Form errors:", form.errors)
-        flash("There are errors in your form submission.")
+            print(f'Error: {str(e)}')
+            flash("There are errors in your form submission.")
+            return redirect('admin/create_training_module.html', title='Create Training Module',form=form)
 
     return render_template('admin/create_training_module.html', title='Create Training Module', form=form)
 

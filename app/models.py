@@ -171,7 +171,7 @@ class TrainingModule (db.Model):
     module_title: so.Mapped[str] = so.mapped_column(sa.String(150), index=True, unique=True)
     module_description: so.Mapped[str] = so.mapped_column(sa.Text, nullable=False)
     module_instructions: so.Mapped[str] = so.mapped_column(sa.Text, nullable=False)
-    video_url: so.Mapped[str] = so.mapped_column(sa.String(300))
+    video_url: so.Mapped[str] = so.mapped_column(sa.String(300), nullable=True)
 
     # Relationship with questions   
     questions: so.Mapped[List['Question']] = so.relationship('Question', back_populates='training_module', cascade='all, delete-orphan')
@@ -383,7 +383,6 @@ class OnboardingStep(db.Model):
     training_module_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('training_module.id'), nullable=True)
     training_module: so.Mapped['TrainingModule'] = so.relationship('TrainingModule', back_populates='onboarding_steps')
 
-    
     def __repr__(self):
         """
         Returns a string representation of the OnboardingStep object.
