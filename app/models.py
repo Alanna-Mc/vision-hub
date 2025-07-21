@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from typing import Optional, List
 import sqlalchemy as sa
 import sqlalchemy.orm as so
+from sqlalchemy import Boolean
 from app import db, login
 
 
@@ -161,6 +162,7 @@ class TrainingModule (db.Model):
         video_url (str): A URL to an instructional video for the module.
         questions (list[Question]): List of questions associated with the module.
         user_progress (list[UserModuleProgress]): List of user progress entries for this module.
+        active (bool): Indicates whether the module is currently active.
     """ 
     __tablename__ = 'training_module'   
 
@@ -172,6 +174,7 @@ class TrainingModule (db.Model):
     module_description: so.Mapped[str] = so.mapped_column(sa.Text, nullable=False)
     module_instructions: so.Mapped[str] = so.mapped_column(sa.Text, nullable=False)
     video_url: so.Mapped[str] = so.mapped_column(sa.String(300), nullable=True)
+    active: so.Mapped[bool] = so.mapped_column(sa.Boolean, nullable=False, default=True)
 
     # Relationship with questions   
     questions: so.Mapped[List['Question']] = so.relationship('Question', back_populates='training_module', cascade='all, delete-orphan')
