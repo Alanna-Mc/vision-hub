@@ -72,13 +72,14 @@
             </div>
         </div>
 
-        <!-- Logo & name -->
+        <!-- Logo & page heading -->
         <div class="logo-name-container">
             <h2 class="logo-text">
                 <span class="logo-vision">Vision</span>
                 <span class="logo-hub">Hub</span>
             </h2>
-            <h3 class="welcome-text">Welcome, {{ current_user.first_name|title }}</h3>
+            {% block specific_heading %}{% endblock %}
+            <!-- <h3 class="welcome-text">Welcome, {{ current_user.first_name|title }}</h3> -->
         </div>
 
         <!-- Content Area -->
@@ -86,6 +87,11 @@
             {% block content %}
             {% endblock %}
         </div>
+
+        <div class = "button-area">
+            {% block specific_buttons %}{% endblock %}
+        </div>
+        
 
         <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
         <script src="{{ url_for('static', filename='js/profilePhotoUpload.js') }}"></script>

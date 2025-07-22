@@ -1,10 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-<html>
-    <body>
-        <h1 class = "page-title">User Management</h1>
-        <div class = "table-wrapper">
+<div class="page-container">
+    <div class = "table-wrapper">
         <table class= "user-table">
             <thead>
                 <tr>
@@ -15,6 +13,7 @@
                     <th>Department</th>
                     <th>Role</th>
                     <th>Onboarding</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -35,11 +34,15 @@
                 {% endfor %}
             </tbody>
         </table>
-            <div class = "button-container-outside-table">
+            
+    </div>
+</div>
+{% endblock %}
+{% block specific_heading %}<h1 class = "page-title">User Management</h1>{% endblock %}
+{% block specific_buttons %}
+<div class = "button-container-outside-table">
                 <a class = "dark-blue-button" href="{{ url_for('register_user') }}">Create New User</a>
                 <a class = "dark-blue-button" href="{{ url_for('admin_dashboard') }}" class="btn">Back</a>
             </div>
-        </div>
-    </body>
-</html>
-{% endblock %}
+            {% endblock %}
+

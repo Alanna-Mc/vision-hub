@@ -51,7 +51,7 @@ class EditUserForm(FlaskForm):
 
 class OptionForm(FlaskForm):
     option_text = StringField("Option Text", validators=[DataRequired(), Length(max=500)])
-    is_correct = BooleanField("Is Correct")
+    is_correct = BooleanField("Correct Answer")
 
     class Meta:
         csrf = False
@@ -73,5 +73,5 @@ class CreateTrainingModuleForm(FlaskForm):
     video_url = URLField("Video URL (Optional)", validators=[Optional(), URL(require_tld=True), Length(max=300)])
     pathways = SelectMultipleField("Assign to Pathways", coerce=int, validators=[DataRequired()])
     questions = FieldList(FormField(QuestionForm), min_entries=1, max_entries=20)
-    submit = SubmitField("Create Training Module")
+    submit = SubmitField("Create")
 
