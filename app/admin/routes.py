@@ -334,18 +334,27 @@ def delete_training_module(module_id):
     Marks the module as inactive (soft delete), so that user-training
     data remains available for future use.
 
-    Args: module_id: ID of the training module to be deleted.
+    Args: 
+        module_id (int): ID of the training module to be deleted.
 
-    Raises: 404 not found error if the module does not exist.
+    Raises: 
+        404 error if the module does not exist.
 
-    Returns: Redirect to the training module management page with a flash message.
+    Returns: 
+        Redirect to the training module management page with a flash message.
     """
     if current_user.role.role_name != 'admin':
         return redirect(url_for('logout'))
 
     module = TrainingModule.query.get_or_404(module_id)
     module.active = False
-    db.session.commit()
-    flash(f'Module "{module.module_title}" has been deleted.', 'success')
-    
+
+    try:
+        db.session.commit()
+        flash(f'Module "{module.module_title}" has been deleted.', 'success')
+    except Exception as e:
+        db.session.rollback()
+        print(f'Failed to deactivate module {module_id}: {e}')
+        flash('An error occurred while deleting the module. Please try again.', 'danger')
+
     return redirect(url_for('manage_training_modules'))
