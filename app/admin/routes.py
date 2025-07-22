@@ -329,6 +329,17 @@ def edit_training_module(module_id):
 @app.route('/admin/delete_training_module/<int:module_id>', methods=['POST'])
 @login_required
 def delete_training_module(module_id):
+    """Deactivate a training module. 
+
+    Marks the module as inactive (soft delete), so that user-training
+    data remains available for future use.
+
+    Args: module_id: ID of the training module to be deleted.
+
+    Raises: 404 not found error if the module does not exist.
+
+    Returns: Redirect to the training module management page with a flash message.
+    """
     if current_user.role.role_name != 'admin':
         return redirect(url_for('logout'))
 
@@ -336,4 +347,5 @@ def delete_training_module(module_id):
     module.active = False
     db.session.commit()
     flash(f'Module "{module.module_title}" has been deleted.', 'success')
+    
     return redirect(url_for('manage_training_modules'))
