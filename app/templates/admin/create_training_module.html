@@ -114,11 +114,19 @@
 </div>
 {% endblock %}
 
-{% block specific_heading %}<h1 class = "page-title">Create Training Module</h1>{% endblock %}
+{% block specific_heading %}
+    <h1 class = "page-title">Create Training Module</h1>
+{% endblock %}
+
 {% block specific_buttons %}
 <div class = "button-container-outside-table">
     {{ form.submit(class="dark-blue-button") }}    
     <a href="{{ url_for('manage_training_modules') }}" class = "dark-blue-button">Back</a>
+    </form>
 </div>
-</form>
 {% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/enforce-one-checkbox.js') }}"></script>
+{% endblock %}
+
