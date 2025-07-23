@@ -2,7 +2,6 @@
 {% block content %}
 <div class="page-container">
     <form method="POST" action="">
-    {{ form.hidden_tag() }}
     
     <!-- Module Details -->
     <div class="card mb-4">
@@ -10,6 +9,7 @@
             <h4 class="mb-0">Module Details</h4>
         </div>
         <div class="card-body">
+            <!-- Title -->
             <div class="mb-3">
                 {{ form.module_title.label(class="form-label") }}
                 {{ form.module_title(class="form-control") }}
@@ -17,6 +17,8 @@
                     <div class="text-danger small">{{ error }}</div>
                 {% endfor %}
             </div>
+
+            <!-- Description -->
             <div class="mb-3">
                 {{ form.module_description.label(class="form-label") }}
                 {{ form.module_description(class="form-control", rows=3) }}
@@ -24,6 +26,8 @@
                     <div class="text-danger small">{{ error }}</div>
                 {% endfor %}
             </div>
+
+            <!-- Instructions -->
             <div class="mb-3">
                 {{ form.module_instructions.label(class="form-label") }}
                 {{ form.module_instructions(class="form-control", rows=3) }}
@@ -31,6 +35,8 @@
                     <div class="text-danger small">{{ error }}</div>
                 {% endfor %}
             </div>
+
+            <!-- Video URL -->
             <div class="mb-3">
                 {{ form.video_url.label(class="form-label") }}
                 {{ form.video_url(class="form-control") }}
@@ -38,6 +44,8 @@
                     <div class="text-danger small">{{ error }}</div>
                 {% endfor %}
             </div>
+
+            <!-- Pathways -->
             <div class="mb-3">
                 {{ form.pathways.label(class="form-label") }}
                 {{ form.pathways(class="form-select", multiple=True) }}
@@ -57,6 +65,8 @@
             {% for question_form in form.questions %}
             <div class="question-block border rounded p-3 mb-4">
                 <h5 class="mb-3">Question {{ loop.index }}</h5>
+
+                <!-- question text -->
                 <div class="mb-3 question-text">
                     {{ question_form.question_text.label(class="form-label") }}
                     {{ question_form.question_text(class="form-control") }}
@@ -65,6 +75,7 @@
                     {% endfor %}
                 </div>
             
+                <!-- Options -->
                 <h5>Options</h5>
                 <div class="option-fields">
                     <label class = "option-num">Option 1</label>
@@ -110,7 +121,6 @@
                 Next Question
         </button>
     </div>
-
 </div>
 {% endblock %}
 
