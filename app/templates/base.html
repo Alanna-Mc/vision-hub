@@ -12,6 +12,7 @@
             <link href="{{ url_for('static', filename='css/stylesheet.css') }}" rel="stylesheet"/>
         </head>
     <body>
+        
         <!-- Sidebar -->
          <div class="sidebar">
             <div class="profile-container">
@@ -82,6 +83,19 @@
             <!-- <h3 class="welcome-text">Welcome, {{ current_user.first_name|title }}</h3> -->
         </div>
 
+        <!--  Flash Messages -->
+        <div>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}" id="flash-{{ loop.index }}">
+                    {{ message }}
+                    </div>
+                {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
         <!-- Content Area -->
         <div class="content">
             {% block content %}
@@ -92,7 +106,6 @@
             {% block specific_buttons %}{% endblock %}
         </div>
         
-
         <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
         <script src="{{ url_for('static', filename='js/profilePhotoUpload.js') }}"></script>
         {% block scripts %}{% endblock %}

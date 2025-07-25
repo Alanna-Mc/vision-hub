@@ -113,14 +113,17 @@
             {% endfor %}
         </div>
     </div>
-    <div class="my-3">
-        <button type="submit" 
-                name="add_question"     
-                value="1" 
-                class="royal-blue-button">
-                Next Question
-        </button>
-    </div>
+        <div class="button-container-form">
+            {{ form.submit(class="royal-blue-button") }} 
+            <button type="submit" 
+                    name="add_question"     
+                    value="1" 
+                    class="royal-blue-button">
+                    Add Question
+            </button>
+
+        </div>
+    </form>
 </div>
 {% endblock %}
 
@@ -129,10 +132,8 @@
 {% endblock %}
 
 {% block specific_buttons %}
-<div class = "button-container-outside-table">
-    {{ form.submit(class="dark-blue-button") }}    
+<div class = "button-container-outside-table">  
     <a href="{{ url_for('manage_training_modules') }}" class = "dark-blue-button">Back</a>
-    </form>
 </div>
 {% endblock %}
 

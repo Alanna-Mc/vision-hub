@@ -35,6 +35,22 @@ body {
     margin: 0;
 }
 
+.flash-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #4caf50; 
+    color: white; 
+    padding: 10px 20px; 
+    border-radius: 5px; 
+    z-index: 1000; 
+    transition: opacity 0.3s ease-in-out;
+}
+.flash-message.hide {
+    opacity: 0;
+    pointer-events: none; 
+}
+
 /* ----------------------------------- Side Bar Styling ----------------------------------- */
 
 .sidebar {
