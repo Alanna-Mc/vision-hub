@@ -136,7 +136,7 @@ def edit_user(user_id):
         # Save changes to the database
         db.session.commit()
 
-        #flash(f'User {user.first_name} {user.surname} user details have been updated')
+        flash(f'User {user.first_name} {user.surname} user details have been updated')
         return redirect(url_for('manage_users'))
     
     return render_template('admin/editUser.html', title='Edit User', form=form, user=user)

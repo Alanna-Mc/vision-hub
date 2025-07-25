@@ -37,19 +37,18 @@ body {
 
 .flash-message {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background-color: #4caf50; 
     color: white; 
-    padding: 10px 20px; 
+    padding: 1rem 2rem 1rem 1rem;
     border-radius: 5px; 
     z-index: 1000; 
-    transition: opacity 0.3s ease-in-out;
+    padding-right: 50px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
-.flash-message.hide {
-    opacity: 0;
-    pointer-events: none; 
-}
+
 
 /* ----------------------------------- Side Bar Styling ----------------------------------- */
 

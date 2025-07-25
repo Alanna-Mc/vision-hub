@@ -2,6 +2,7 @@
 {% block content %}
 <div class="page-container">
     <form method="POST" action="">
+        {{ form.hidden_tag() }}
     
     <!-- Module Details -->
     <div class="card mb-4">
@@ -114,16 +115,13 @@
         </div>
     </div>
         <div class="button-container-form">
-            {{ form.submit(class="royal-blue-button") }} 
             <button type="submit" 
                     name="add_question"     
                     value="1" 
                     class="royal-blue-button">
                     Add Question
             </button>
-
         </div>
-    </form>
 </div>
 {% endblock %}
 
@@ -132,9 +130,11 @@
 {% endblock %}
 
 {% block specific_buttons %}
-<div class = "button-container-outside-table">  
-    <a href="{{ url_for('manage_training_modules') }}" class = "dark-blue-button">Back</a>
-</div>
+    <div class = "button-container-outside-table">  
+        {{ form.submit(class="dark-blue-button") }} 
+        <a href="{{ url_for('manage_training_modules') }}" class = "dark-blue-button">Back</a>
+        </form>
+    </div>
 {% endblock %}
 
 {% block scripts %}
