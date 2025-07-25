@@ -35,6 +35,21 @@ body {
     margin: 0;
 }
 
+.flash-message {
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #4caf50; 
+    color: white; 
+    padding: 1rem 2rem 1rem 1rem;
+    border-radius: 5px; 
+    z-index: 1000; 
+    padding-right: 50px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+
 /* ----------------------------------- Side Bar Styling ----------------------------------- */
 
 .sidebar {
