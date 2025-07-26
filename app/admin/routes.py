@@ -1,5 +1,4 @@
-"""
-Admin routes for user and training module management.
+"""Admin routes for user and training module management.
 
 This file defines all `/admin/...` endpoints for creating, editing,
 viewing and deleting users and training modules. All routes ensure that the
