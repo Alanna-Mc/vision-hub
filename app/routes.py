@@ -1,6 +1,12 @@
 # Login functionality was developed with the support of Miguel Grinberg's The 
 # Flash Mega Tutorial series
+# https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-v-user-logins
 
+"""Routes for user authentication and dashboard management
+
+This file handles user login/logout, dashboard rendering for staff and 
+manager roles, staff training workflows, and profile photo upload.
+"""
 import os
 import secrets
 from datetime import datetime, timezone
@@ -33,11 +39,6 @@ from app.models import (
 )
 from config import Config
 
-"""Routes for user authentication and dashboard management
-
-This file handles user login/logout, dashboard rendering for staff and 
-manager roles, staff training workflows, and profile photo upload.
-"""
 @app.route('/login', methods=['GET', 'POST'])
 def login():      
     """Authenticate a user and redirect to role-specific dashboard.
