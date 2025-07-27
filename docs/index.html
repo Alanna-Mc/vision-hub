@@ -38,7 +38,37 @@
                 </a>
             <input type="search" placeholder="Search API Documentation..." aria-label="search box">
     </header>
-    <main class="pdoc"></main>
+    <main class="pdoc">
+    <!-- Custom Index Start-->
+    <div style="margin-left: 20px;">
+        <h1 class="heading">VisionHub API Reference</h1>
+        <p>
+        VisionHub is a work-in-progress, web-based onboaring platform built with 
+        flask. The application offers a single centralised hub to welcome and 
+        onboard new team members, deliver and track staff training, as well as 
+        host and organise the company's knowledge base.
+        </p>
+        <h2>Core Features Created</h2>
+        <ul>
+            <li>User authentication and role-based dashboards (Admin, Manager, Staff)</li>
+            <li>User creation and managment controlled by Admins</li>
+            <li>Training module creation by Admins with automatic assignment</li>
+            <li>Training modules and progress tracking for staff</li>
+            <li>Profile photo upload</li>
+        </ul>
+        <h2>How to Navigate</h2>
+            <p>
+            Use the navigation sidebar to browse through the code documentation or 
+            the burger menu on smaller screens.
+            </p>
+        <h2>About This Documentation</h2>
+            <p>
+            This documentation was generated using <a href="https://pdoc.dev/">pdoc</a> 
+            and reflects the current structure of the VisionHub backend application.
+            </p>
+    </div>
+    <!-- Custom Index Finish-->
+    </main>
 <script>
     function escapeHTML(html) {
         return document.createElement('div').appendChild(document.createTextNode(html)).parentNode.innerHTML;
@@ -221,21 +251,4 @@
         }
     });
 </script></body>
-
-<!-- Custom Index Start-->
-    <div style="margin-left: 20px;">
-        <h1 style="color: #003366; font-weight: bold; ">VisionHub API Reference</h1>
-        <ul>
-                <li><a href="app.html">app</a></li>
-                <li><a href="app/forms.html">app/forms</a></li>
-                <li><a href="app/models.html">app/models</a></li>
-                <li><a href="app/routes.html">app/routes</a></li>
-                <li><a href="app/admin/forms.html">app/admin/forms</a></li>
-                <li><a href="app/admin/routes.html">app/admin/routes</a></li>
-                <li><a href="config.html">config</a></li>
-                <li><a href="visionHub.html">visionHub</a></li>
-        </ul>
-    </div>
-    <!-- Custom Index Finish-->
-
 </html>
