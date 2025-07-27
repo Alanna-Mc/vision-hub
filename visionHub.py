@@ -1,13 +1,24 @@
+# Code created with support of Miguel Grinberg's The Flash Mega Tutorial series
+# https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-iv-database
+"""Entrypoint for the Vision Hub application."""
 import sqlalchemy as sa
 import sqlalchemy.orm as so
+
 from app import app, db
-from app.models import User, Role, Department, TrainingModule, Question, Option, UserModuleProgress, UserQuestionAnswer
+from app.models import (
+    User, 
+    Role, 
+    Department, 
+    TrainingModule, 
+    Question, 
+    Option, 
+    UserModuleProgress, 
+    UserQuestionAnswer
+)
 
-
-# Add shell context to work with database entities without having to import them in the command line 
-# Code created with support of Miguel Grinberg's The Flash Mega Tutorial series
 @app.shell_context_processor
 def make_shell_context():
+    """Provide names and objects to the Flask shell for quick access."""
     return {
         'sa': sa, 
         'so': so, 

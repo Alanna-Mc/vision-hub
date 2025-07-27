@@ -1,3 +1,4 @@
+"""Application configuration, including database and file upload settings."""
 import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -8,20 +9,20 @@ class Config:
         'sqlite:///' + os.path.join(basedir, 'app.db')
 
     # Where to save profile photos
-    PROFILE_PHOTO_FOLDER = os.path.join(basedir,
-                                        'app',
-                                        'static',
-                                        'images',
-                                        'profilePhoto')
+    PROFILE_PHOTO_FOLDER = os.path.join(
+        basedir,
+        'app',
+        'static',
+        'images',
+        'profilePhoto'
+    )
 
     MAX_CONTENT_LENGTH = 2 * 1024 * 1024
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
     @staticmethod
     def allowed_file(filename: str) -> bool:
-        """
-        Check that the filename has one of our allowed extensions.
-        """
+        """Return True if `filename` has an allowed extension."""
         if '.' not in filename:
             return False
         ext = filename.rsplit('.', 1)[1].lower()
