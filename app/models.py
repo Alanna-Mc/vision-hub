@@ -4,25 +4,25 @@
 
 """Data model definitions for Vision Hub.
 
-All models are defined using SQLAlchemy ORM and represent the database schema 
-for the application.
+    All models are defined using SQLAlchemy ORM and represent the database schema 
+    for the application.
 
-Models include:
-- User: Represents a user in the system with self-referential relationships 
-for managers.
-- Role: Represents user roles (e.g., admin, manager, staff).
-- Department: Represents departments within the organization.
-- TrainingModule: Represents training modules with associated questions and 
-user progress.
-- Question: Represents questions within training modules.
-- Option: Represents answer options for questions.
-- UserModuleProgress: Tracks user progress in training modules.
-- UserQuestionAnswer: Represents answers submitted by users to questions.
-- OnboardingPath: Represents onboarding paths for different staff types.
-- OnboardingStep: Represents steps in an onboarding path, such as training 
-modules.
-- DocumentRepository: Represents documents in the repository.
-- Report: Represents reports generated in the system.
+    Models include:
+        - User: Represents a user in the system with self-referential 
+        relationships for managers.
+        - Role: Represents user roles (e.g., admin, manager, staff).
+        - Department: Represents departments within the organization.
+        - TrainingModule: Represents training modules with associated 
+        questions and user progress.
+        - Question: Represents questions within training modules.
+        - Option: Represents answer options for questions.
+        - UserModuleProgress: Tracks user progress in training modules.
+        - UserQuestionAnswer: Represents answers submitted by users to questions.
+        - OnboardingPath: Represents onboarding paths for different staff types.
+        - OnboardingStep: Represents steps in an onboarding path, such as 
+        training modules.
+        - DocumentRepository: Represents documents in the repository.
+        - Report: Represents reports generated in the system.
 """ 
 from datetime import datetime, timezone
 from typing import Optional, List
@@ -59,7 +59,7 @@ class User(UserMixin, db.Model):
         department_id (int): Foreign key to the Department model.
         department (Department): The department assigned to the user.
         module_progress (list[UserModuleProgress]): List of training module 
-        progress entries for this user.
+            progress entries for this user.
         onboarding_path_id (Optional[int]): Foreign key to an OnboardingPath.
         onboarding_path (OnboardingPath): The onboarding path assigned to the user.
     """
@@ -257,7 +257,7 @@ class TrainingModule (db.Model):
         questions (list[Question]): Questions associated with the module.
         user_progress (list[UserModuleProgress]): Progress entries for users.
         onboarding_steps (List[OnboardingStep]): Steps in assigned onboarding 
-        paths.
+            paths.
     """ 
     __tablename__ = 'training_module'   
 
@@ -402,7 +402,7 @@ class UserModuleProgress (db.Model):
         user (User): The user associated with this progress entry.
         training_module_id (int): Foreign key to the TrainingModule model.
         training_module (TrainingModule): The training module associated with 
-        this progress entry.
+            this progress entry.
         answers (list[UserQuestionAnswer]): Answers submitted during this attempt.
     """
     __tablename__ = 'user_module_progress'
@@ -466,12 +466,12 @@ class UserQuestionAnswer (db.Model):
         is_correct (bool): True if the selected option was correct.
         progress_id (int): Foreign key to the UserModuleProgress model.
         progress (UserModuleProgress): Relationship to the user's progress 
-        record.
+            record.
         question_id (int): Foreign key to the Question.
         question (Question): Question associated with this answer.
         selected_option_id (int, optional): Foreign key to the chosen Option.
-        selected_option (Option, optional): Relationship to the selected Option 
-        (if any).
+        selected_option (Option, optional): Relationship to the selected 
+            Option (if any).
     """
     __tablename__ = 'user_question_answer'
     
@@ -512,7 +512,7 @@ class OnboardingPath(db.Model):
     Attributes:
         id (int): Primary key.
         path_name (str): Name of the onboarding path (e.g., “office”, 
-        “operational”).
+            “operational”).
         steps (list[OnboardingStep]): Ordered steps in this path.
     """
     __tablename__ = 'onboarding_path'
@@ -548,9 +548,9 @@ class OnboardingStep(db.Model):
         onboarding_path_id (int): Foreign key to the OnboardingPath.
         path (OnboardingPath): Relationship back to the parent path.
         training_module_id (int, optional): Foreign key to the TrainingModule, 
-        if any.
+            if any.
         training_module (TrainingModule): The training module associated with 
-        this step.
+            this step.
     """
     __tablename__ = 'onboarding_step'
 
@@ -595,7 +595,7 @@ class DocumentRepository(db.Model):
         id (int): Primary key.
         document_title (str): Title of the document.
         document_category (str): Category of the document (e.g., Policy, Guide, 
-        Form).
+            Form).
         upload_date (datetime): Timestamp when uploaded.
         file_path (str):  Filesystem path to the uploaded file.
         user_id (int): Foreign key to the uploaders User model.

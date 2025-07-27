@@ -35,11 +35,10 @@ def register_user():
         None (form data submitted via POST).
 
     Returns:
-        Response: 
-            - Redirects to logout if the user is not an admin. 
-            - Re-renders the registration form on GET or validation failure.
-            - Redirects to manage_users on successful creation (with a flash
-            message).
+        - Redirects to logout if the user is not an admin. 
+        - Re-renders the registration form on GET or validation failure.
+        - Redirects to manage_users on successful creation (with a flash
+        message).
     """
     if not current_user.is_authenticated or current_user.role.role_name != 'admin':
         return redirect(url_for('logout'))
@@ -107,9 +106,8 @@ def admin_dashboard():
     """Display the admin dashboard.
 
     Returns:
-        Response: 
-            - Rendered admin dashboard template.
-            - Redirects to logout if the user is not an admin.
+        - Rendered admin dashboard template.
+        - Redirects to logout if the user is not an admin.
     """
     if current_user.role.role_name!= "admin":
         return redirect(url_for('logout'))
@@ -126,11 +124,10 @@ def manage_users():
     """Display all users in the system.
 
     Returns:
-        Response: 
-            - Rendered template with a list of all users.
-            - Redirects to the admin dashboard with a flash message if an error 
-            occurs.
-            - Redirects to logout if the user is not an admin.
+        - Rendered template with a list of all users.
+        - Redirects to the admin dashboard with a flash message if an error 
+        occurs.
+        - Redirects to logout if the user is not an admin.
     """
     if current_user.role.role_name != "admin":
         return redirect(url_for('logout'))
@@ -157,9 +154,8 @@ def view_user(user_id):
         user_id (int): ID of the user to view.
     
     Returns:
-        Response: 
-            - Rendered template with user details.
-            - Redirects to logout if the user is not an admin.
+        - Rendered template with user details.
+        - Redirects to logout if the user is not an admin.
     """
     if current_user.role.role_name != "admin":
         return redirect(url_for('logout'))
@@ -189,10 +185,9 @@ def edit_user(user_id):
         user_id (int): ID of the user to edit.
 
     Returns:
-        Response: 
-            - Rendered template with the edit user form.
-            - Redirects to logout if the user is not an admin.
-            - Redirects to manage_users on successful update with a flash message.
+        - Rendered template with the edit user form.
+        - Redirects to logout if the user is not an admin.
+        - Redirects to manage_users on successful update with a flash message.
     """
     if current_user.role.role_name != "admin":
         return redirect(url_for('logout'))
@@ -260,7 +255,7 @@ def delete_user(user_id):
     """Delete a user from the system.
 
     Details:
-        Users are prevented from deleting their own account.
+        - Users are prevented from deleting their own account.
 
     Args:
         user_id (int): ID of the user to delete.
@@ -269,12 +264,11 @@ def delete_user(user_id):
         404 error if the user does not exist.
 
     Returns:
-        Response: 
-            - Redirects to manage_users on successful deletion with a flash 
-            message.
-            - Redirects to manage_users with a flash message if the user tries
-            to delete their own account.
-            - Redirects to logout if the user is not an admin.
+        - Redirects to manage_users on successful deletion with a flash 
+        message.
+        - Redirects to manage_users with a flash message if the user tries
+        to delete their own account.
+        - Redirects to logout if the user is not an admin.
     """
     if current_user.role.role_name != 'admin':
         return redirect(url_for('logout'))
@@ -309,12 +303,11 @@ def create_training_module():
         None (form data submitted via POST).
     
     Returns:
-        Response:
-            - Redirects to manage_training_modules with a flash message on 
-            successful creation.
-            - Re-renders the “create” template if fields are invalid or
-              when dynamically adding a question.
-            - Redirects to logout if the user is not an admin.
+        - Redirects to manage_training_modules with a flash message on 
+        successful creation.
+        - Re-renders the “create” template if fields are invalid or when 
+        dynamically adding a question.
+        - Redirects to logout if the user is not an admin.
     """
     if current_user.role.role_name != "admin":
         return redirect(url_for('logout'))
@@ -401,9 +394,8 @@ def manage_training_modules():
     """Display all active training modules.
 
     Returns:
-        Response: 
-            - Rendered template with a list of all active training modules.
-            - Redirects to logout if the user is not an admin.
+        - Rendered template with a list of all active training modules.
+        - Redirects to logout if the user is not an admin.
     """
     if current_user.role.role_name != "admin":
         return redirect(url_for('logout'))
@@ -429,10 +421,9 @@ def details_training_module(module_id):
         404 error if the module does not exist.
 
     Returns:
-        Response: 
-            - Rendered template with training module details and associated 
-            questions.
-            - Redirects to logout if the user is not an admin.
+        - Rendered template with training module details and associated 
+        questions.
+        - Redirects to logout if the user is not an admin.
     """
     if current_user.role.role_name != "admin":
         return redirect(url_for('logout'))
@@ -471,13 +462,12 @@ def edit_training_module(module_id):
         404 error if the module does not exist.
 
     Returns:
-        Response: 
-            - Rendered template with the edit form pre-populated with the
-            module's current details.
-            - Redirects to manage_training_modules on successful update with a
-            flash message.
-            - Re-renders the edit form if validation fails or on GET request.
-            - Redirects to logout if the user is not an admin.
+        - Rendered template with the edit form pre-populated with the
+        module's current details.
+        - Redirects to manage_training_modules on successful update with a
+        flash message.
+        - Re-renders the edit form if validation fails or on GET request.
+        - Redirects to logout if the user is not an admin.
     """
     if current_user.role.role_name != "admin":
         return redirect(url_for('logout'))
@@ -551,13 +541,13 @@ def delete_training_module(module_id):
     This marks the module as inactive so it no longer appears in listings.
     It does not delete the record from the database.
 
-    Args: 
+    Args:
         module_id (int): ID of the training module to be deleted.
-
-    Raises: 
+        
+    Raises:
         404 error if the module does not exist.
 
-    Returns: 
+    Returns:
         - Redirect to the training module management page with a success message.
         - Redirects to logout if the user is not an admin.
     """

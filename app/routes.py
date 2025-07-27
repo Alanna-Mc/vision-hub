@@ -48,9 +48,8 @@ def login():
     credentials with a flash message.
 
     Returns:
-        Response:
-            - Rendered login template on GET or invalid credentials.
-            - Redirect to admin, manager, or staff dashboard on successful login.
+        - Rendered login template on GET or invalid credentials.
+        - Redirect to admin, manager, or staff dashboard on successful login.
     """
     if current_user.is_authenticated:
         if current_user.role.role_name == "admin":
@@ -144,7 +143,7 @@ def training_dashboard():
     Returns:
         - Redirect to logout if the current user isn't staff.
         - Rendered “dashboard_training.html” with three lists:
-        `to_be_completed_modules`, `in_progress_modules`, and `completed_modules`.
+            `to_be_completed_modules`, `in_progress_modules`, and `completed_modules`.
     """
     if current_user.role.role_name != "staff":
         return redirect(url_for('logout'))
@@ -212,11 +211,10 @@ def take_training_module(module_id):
         module_id (int): The ID of the training module to be taken.
    
     Returns:
-        Response:
-            - Redirects to logout if the user is not in staff role.
-            - Renders 'take_training_module.html' with the module and any of the
+        - Redirects to logout if the user is not in staff role.
+        - Renders 'take_training_module.html' with the module and any of the
             users previous answers.
-            - Redirects to the training dashboard after saving or submitting 
+        - Redirects to the training dashboard after saving or submitting 
             answers.
     """
     if current_user.role.role_name != 'staff':
@@ -332,8 +330,7 @@ def update_profile_photo():
         record.
 
     Returns:
-        Response:
-            - Redirect to `next` URL.
+        - Redirect to `next` URL.
     """
     photo = request.files.get('photo')
     if not photo or photo.filename == '':
