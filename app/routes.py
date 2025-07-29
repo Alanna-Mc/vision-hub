@@ -109,13 +109,47 @@ def logout():
 @app.route('/dashboard_staff')
 @login_required
 def staff_dashboard():
-    """Render the staff dashboard if user is staff."""
     if current_user.role.role_name != "staff":
         return redirect(url_for('login'))
-   
+
+    manager = current_user.manager
+
+    steps = (
+        current_user.onboarding_path.steps
+        if current_user.onboarding_path 
+        else []
+    )
+
+    active_modules = [
+        step.training_module 
+        for step in steps 
+        if step.training_module.active
+    ]
+
+    passing_threshold = 0.5
+    to_do_list = []
+
+    for module in active_modules:
+        progress = UserModuleProgress.query.filter_by(
+            user_id=current_user.id,
+            training_module_id=module.id
+        ).order_by(UserModuleProgress.id.desc()).first()
+
+        if (
+            progress is None
+            or progress.completed_date is None
+            or (
+                progress.score is not None
+                and (progress.score / max(len(module.questions), 1)) < passing_threshold
+            )
+        ):
+            to_do_list.append(module)
+
     return render_template(
-        '/dashboard_staff.html',
-        title='Staff Dashboard'
+        'dashboard_staff.html',
+        title='Staff Dashboard',
+        to_do_list=to_do_list,
+        manager=manager
     )
 
 
