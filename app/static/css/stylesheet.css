@@ -254,6 +254,11 @@ body {
     margin-right: 10px;
 }
 
+.progress-bar {
+    height: 10px;
+    border-radius: 5px;
+}
+
 /* ------------------------------------- Admin Styling ------------------------------------- */
 
 .admin-quick-links {
@@ -278,34 +283,21 @@ body {
     background-color: #4cbfa4;
 }
 
-.progress-bar {
-    height: 10px;
-    border-radius: 5px;
-}
-
 /* ------------------------------------- Table Styling ------------------------------------- */
 
-/* Makes the table container scrollable */
-.table-wrapper {
+.custom-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.scrolable-table {
   max-height: 400px;
   overflow-y: auto;
   margin-bottom: 1.5rem;
 }
 
-.user-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-}
-
-.todo-table{
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-}
-
-/* sticky header row */
-.user-table thead th {
+.custom-table thead th {
   position: sticky;
   top: 0;
   border-bottom: 2px solid #ddd;
@@ -313,18 +305,16 @@ body {
   z-index: 2;
 }
 
-/* cell padding & alignment */
-.user-table th,
-.user-table td {
+.custom-table th,
+.custom-table td {
   padding: 0.75rem 1rem;
   text-align: left;
   vertical-align: middle;
   border-bottom: 1px solid #eee;
 }
 
-/* Reduce last column so buttons don’t stretch */
-.user-table th:last-child,
-.user-table td:last-child {
+.custom-table th:last-child,
+.custom-table td:last-child {
   white-space: nowrap;
   width: 1%;
 }

@@ -2,8 +2,8 @@
 
 {% block content %}
 <div class="page-container">
-    <div class = "table-wrapper">
-        <table class= "user-table">
+    <div class = "scrolable-table">
+        <table class= "custom-table">
             <thead>
                 <tr>
                     <th>First Name</th>
@@ -33,16 +33,16 @@
                 </tr>
                 {% endfor %}
             </tbody>
-        </table>
-            
+        </table>  
     </div>
 </div>
 {% endblock %}
 {% block specific_heading %}<h1 class = "page-title">User Management</h1>{% endblock %}
+
 {% block specific_buttons %}
 <div class = "button-container-outside-table">
-                <a class = "dark-blue-button" href="{{ url_for('register_user') }}">Create New User</a>
-                <a class = "dark-blue-button" href="{{ url_for('admin_dashboard') }}" class="btn">Back</a>
-            </div>
-            {% endblock %}
+    <a class = "dark-blue-button" href="{{ url_for('register_user') }}">Create New User</a>
+    <a class = "dark-blue-button" href="{{ url_for('admin_dashboard') }}" class="btn">Back</a>
+</div>
+{% endblock %}
 

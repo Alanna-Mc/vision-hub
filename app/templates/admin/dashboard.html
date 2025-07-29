@@ -18,3 +18,7 @@
     </div>
 </div>
 {% endblock %}
+
+{% block specific_heading %}
+  <h3 class="welcome-text">Welcome, {{ current_user.first_name|title }}</h3>
+{% endblock %}
