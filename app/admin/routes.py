@@ -45,16 +45,21 @@ def register_user():
 
     form = CreateUserForm()
 
-    # Dropdown values for non-text fields
     form.role.choices = [(0, 'Select Role')] + [
         (role.id, role.role_name) for role in Role.query.all()
     ]
     form.department.choices = [(0, 'Select Department')] + [
         (dept.id, dept.department_name) for dept in Department.query.all()
     ]
-    form.manager.choices = [(0, 'None')] + [
-        (user.id, f"{user.first_name} {user.surname}") for user in User.query.all()
-    ]
+
+    manager_role = Role.query.filter_by(role_name='manager').first()
+    manager_choices = [(0, 'None')]
+    if manager_role:
+        manager_choices += [
+            (u.id, f"{u.first_name.title()} {u.surname.title()}")
+            for u in User.query.filter_by(role_id=manager_role.id)
+        ]
+    form.manager.choices = manager_choices
 
     if form.validate_on_submit():
         department_id = int(form.department.data)
